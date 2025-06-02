@@ -152,6 +152,17 @@
             box-shadow: 0 0 0 3px rgba(109, 212, 236, 0.1);
         }
         
+        textarea {
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #6dd4ec !important;
+            box-shadow: 0 0 0 3px rgba(109, 212, 236, 0.1);
+        }
+        
         .input-error {
             border-color: #ff4757 !important;
         }
@@ -382,6 +393,87 @@
         .btn-link:hover {
             color: #5bc4da !important;
         }
+        
+        /* Dashboard Styles */
+        .dashboard-tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666666;
+        }
+        
+        .dashboard-tab.active {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .dashboard-tab:hover:not(.active) {
+            background: rgba(109, 212, 236, 0.2);
+            color: #333333;
+        }
+        
+        .dashboard-tab-content {
+            display: none;
+        }
+        
+        .dashboard-tab-content.active {
+            display: block;
+        }
+        
+        .match-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .match-card:hover {
+            border-color: #6dd4ec;
+            transform: translateY(-2px);
+        }
+        
+        .match-avatar {
+            width: 40px;
+            height: 40px;
+            background: #6dd4ec;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            margin-right: 12px;
+        }
+        
+        .match-info {
+            flex: 1;
+        }
+        
+        .match-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .match-business {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 8px;
+        }
+        
+        .match-date {
+            font-size: 12px;
+            color: #999999;
+        }
     </style>
 </head>
 <body>
@@ -558,6 +650,106 @@
             
             <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
             <button class="btn" onclick="goBackToCheckin()">BACK TO CHECK-IN</button>
+        </div>
+        
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3 style="font-size: 20px; margin: 0;">Dashboard</h3>
+                <button type="button" class="btn-link" onclick="signOut()" style="color: #666; font-size: 12px;">Sign Out</button>
+            </div>
+            
+            <!-- Dashboard Navigation -->
+            <div style="display: flex; margin-bottom: 24px; background: rgba(0,0,0,0.05); border-radius: 12px; padding: 4px;">
+                <button class="dashboard-tab active" data-tab="matches" onclick="showDashboardTab('matches')">Matches</button>
+                <button class="dashboard-tab" data-tab="profile" onclick="showDashboardTab('profile')">Profile</button>
+                <button class="dashboard-tab" data-tab="events" onclick="showDashboardTab('events')">My Events</button>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div id="dashboardContent">
+                
+                <!-- Matches Tab -->
+                <div id="matchesTab" class="dashboard-tab-content active">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔥</div>
+                        <h4 style="font-size: 18px; margin-bottom: 8px;">Your Matches</h4>
+                        <p style="color: #666666; font-size: 14px;">People you've connected with at events</p>
+                    </div>
+                    
+                    <div id="dashboardMatchesList">
+                        <div style="text-align: center; padding: 40px 20px; color: #666666;">
+                            <div style="font-size: 32px; margin-bottom: 16px;">💔</div>
+                            <div>No matches yet!</div>
+                            <div style="font-size: 12px; margin-top: 8px;">Start networking at events to find your connections</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Tab -->
+                <div id="profileTab" class="dashboard-tab-content">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">👤</div>
+                        <h4 style="font-size: 18px; margin-bottom: 8px;">Your Profile</h4>
+                        <p style="color: #666666; font-size: 14px;">Update your networking information</p>
+                    </div>
+                    
+                    <div id="profileEditForm">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileName" placeholder="Your full name">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Business/Company</label>
+                            <input type="text" id="profileBusiness" placeholder="Your company or role">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Industry</label>
+                            <input type="text" id="profileIndustry" placeholder="Your industry">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Bio</label>
+                            <textarea id="profileBio" placeholder="Tell others about yourself..." style="width: 100%; min-height: 80px; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <button class="btn" onclick="saveProfile()">SAVE PROFILE</button>
+                    </div>
+                </div>
+                
+                <!-- My Events Tab -->
+                <div id="eventsTab" class="dashboard-tab-content">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+                        <h4 style="font-size: 18px; margin-bottom: 8px;">My Events</h4>
+                        <p style="color: #666666; font-size: 14px;">Events you've attended and upcoming ones</p>
+                    </div>
+                    
+                    <div id="myEventsList">
+                        <div style="background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Expat Entrepreneurs Meetup DXB</div>
+                            <div style="font-size: 14px; color: #666666; margin-bottom: 8px;">
+                                📅 Monday, June 2, 2025 • 7:00 PM - 9:00 PM<br>
+                                📍 Lock, Stock & Barrel JBR - The Walk
+                            </div>
+                            <div style="background: #6dd4ec; color: #000000; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; display: inline-block;">
+                                ✅ Attended
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; padding: 40px 20px; color: #666666;">
+                            <div style="font-size: 32px; margin-bottom: 16px;">🎫</div>
+                            <div>No upcoming events</div>
+                            <div style="font-size: 12px; margin-top: 8px;">Check back for new ProLink events!</div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <button class="btn btn-secondary" onclick="goBackToSuccess()">BACK</button>
         </div>
     </div>
     
@@ -1146,7 +1338,168 @@
         }
         
         function showDashboard() {
-            showNotification('Full dashboard coming soon! For now, enjoy networking at the event.');
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                showCreateAccount();
+                return;
+            }
+            
+            showScreen('dashboardScreen');
+            loadDashboardData();
+        }
+        
+        // Dashboard Functions
+        function showDashboardTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.dashboard-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.dashboard-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+            
+            // Load specific tab data
+            if (tabName === 'matches') {
+                loadDashboardMatches();
+            } else if (tabName === 'profile') {
+                loadProfileForm();
+            } else if (tabName === 'events') {
+                loadMyEvents();
+            }
+        }
+        
+        function loadDashboardData() {
+            // Set default tab to matches
+            showDashboardTab('matches');
+        }
+        
+        function loadDashboardMatches() {
+            const matchesList = document.getElementById('dashboardMatchesList');
+            
+            const userMatches = matches.filter(match => 
+                match.user1.id === currentUser.id || match.user2.id === currentUser.id
+            );
+            
+            if (userMatches.length === 0) {
+                matchesList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #666666;">
+                        <div style="font-size: 32px; margin-bottom: 16px;">💔</div>
+                        <div>No matches yet!</div>
+                        <div style="font-size: 12px; margin-top: 8px;">Start networking at events to find your connections</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            matchesList.innerHTML = userMatches.map(match => {
+                const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
+                const matchDate = new Date(match.timestamp).toLocaleDateString();
+                
+                return `
+                    <div class="match-card" style="display: flex; align-items: center;">
+                        <div class="match-avatar">${getInitials(otherUser.fullName || otherUser.name)}</div>
+                        <div class="match-info">
+                            <div class="match-name">${otherUser.fullName || otherUser.name}</div>
+                            <div class="match-business">${otherUser.business || 'Entrepreneur'}</div>
+                            ${otherUser.email ? `<div style="font-size: 12px; color: #6dd4ec; margin-top: 4px;">${otherUser.email}</div>` : ''}
+                            <div class="match-date">Matched on ${matchDate}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function loadProfileForm() {
+            // Pre-fill form with current user data
+            document.getElementById('profileName').value = currentUser.fullName || '';
+            document.getElementById('profileBusiness').value = currentUser.business || '';
+            document.getElementById('profileIndustry').value = currentUser.industry || '';
+            document.getElementById('profileBio').value = currentUser.bio || '';
+        }
+        
+        async function saveProfile() {
+            const name = document.getElementById('profileName').value.trim();
+            const business = document.getElementById('profileBusiness').value.trim();
+            const industry = document.getElementById('profileIndustry').value.trim();
+            const bio = document.getElementById('profileBio').value.trim();
+            
+            if (!name) {
+                showNotification('Please enter your full name', true);
+                return;
+            }
+            
+            try {
+                // Update current user object
+                currentUser.fullName = name;
+                currentUser.business = business || 'Entrepreneur';
+                currentUser.industry = industry;
+                currentUser.bio = bio;
+                
+                // Save to Firebase
+                if (isFirebaseAvailable) {
+                    const profileData = {
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        industry: industry,
+                        bio: bio,
+                        timestamp: currentUser.timestamp,
+                        lastUpdated: new Date().toISOString()
+                    };
+                    
+                    await saveUserProfile(profileData);
+                    
+                    // Update display name in Firebase Auth
+                    if (auth.currentUser) {
+                        await auth.currentUser.updateProfile({
+                            displayName: name
+                        });
+                    }
+                }
+                
+                showNotification('Profile updated successfully!');
+                
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showNotification('Error saving profile. Please try again.', true);
+            }
+        }
+        
+        function loadMyEvents() {
+            // For now, we'll show the current event if user has checked in
+            const eventsList = document.getElementById('myEventsList');
+            
+            const hasCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
+            
+            let eventsHTML = '';
+            
+            if (hasCheckedIn) {
+                eventsHTML += `
+                    <div style="background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">Expat Entrepreneurs Meetup DXB</div>
+                        <div style="font-size: 14px; color: #666666; margin-bottom: 8px;">
+                            📅 Monday, June 2, 2025 • 7:00 PM - 9:00 PM<br>
+                            📍 Lock, Stock & Barrel JBR - The Walk
+                        </div>
+                        <div style="background: #6dd4ec; color: #000000; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; display: inline-block;">
+                            ✅ Attended • Checked in at ${new Date(hasCheckedIn.checkedInAt).toLocaleTimeString()}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            eventsHTML += `
+                <div style="text-align: center; padding: 40px 20px; color: #666666;">
+                    <div style="font-size: 32px; margin-bottom: 16px;">🎫</div>
+                    <div>No upcoming events</div>
+                    <div style="font-size: 12px; margin-top: 8px;">Check back for new ProLink events!</div>
+                </div>
+            `;
+            
+            eventsList.innerHTML = eventsHTML;
         }
         
         // Load pre-registered attendees
@@ -1565,6 +1918,11 @@
                 }).join('');
                 
                 matchesSection.style.display = 'block';
+            }
+            
+            // Also update dashboard matches if dashboard is open
+            if (document.getElementById('dashboardScreen').classList.contains('active')) {
+                loadDashboardMatches();
             }
         }
         
