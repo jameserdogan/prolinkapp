@@ -116,6 +116,123 @@
             border-color: #6dd4ec;
             box-shadow: 0 0 0 3px rgba(109, 212, 236, 0.1);
         }
+        
+        /* Attendee List Styles */
+        .attendee-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attendee-item:hover {
+            background: rgba(109, 212, 236, 0.1);
+        }
+        
+        .attendee-item.selected {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .attendee-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendee-info {
+            flex: 1;
+        }
+        
+        .attendee-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .attendee-ticket {
+            font-size: 12px;
+            color: #666666;
+        }
+        
+        .attendee-item.selected .attendee-ticket {
+            color: #000000;
+        }
+        
+        .check-icon {
+            font-size: 18px;
+            color: #000000;
+            display: none;
+        }
+        
+        .attendee-item.selected .check-icon {
+            display: block;
+        }
+        
+        /* Profile Card Styles */
+        .profile-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            border-top: 4px solid #6dd4ec;
+        }
+        
+        .profile-card.dragging {
+            cursor: grabbing;
+        }
+        
+        .profile-card.swiped-left {
+            transform: translateX(-100%) rotate(-20deg);
+            opacity: 0;
+        }
+        
+        .profile-card.swiped-right {
+            transform: translateX(100%) rotate(20deg);
+            opacity: 0;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: #6dd4ec;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .profile-business {
+            font-size: 16px;
+            color: #6dd4ec;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .profile-details {
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -183,6 +300,65 @@
                 <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
             </div>
         </div>
+        
+        <!-- Event Check-in Screen -->
+        <div id="checkinScreen" class="screen">
+            <h3 style="margin-bottom: 16px; font-size: 20px;">Check In to Event</h3>
+            
+            <div style="background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                <div style="font-weight: 600; margin-bottom: 4px;">Expat Entrepreneurs Meetup DXB</div>
+                <div style="font-size: 14px; color: #666666;">
+                    📅 Monday, June 2, 2025 • 7:00 PM - 9:00 PM<br>
+                    📍 Lock, Stock & Barrel JBR - The Walk
+                </div>
+                <div style="background: #6dd4ec; color: #000000; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; display: inline-block; margin-top: 8px;">
+                    <span id="checkedInCount">0</span> people checked in
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Search for your name</label>
+                <input type="text" id="attendeeSearch" placeholder="Type your name..." onkeyup="filterAttendees()">
+            </div>
+            
+            <div style="max-height: 300px; overflow-y: auto; border: 2px solid #e0e0e0; border-radius: 12px; margin-bottom: 16px;" id="attendeeList">
+                <!-- Attendee list will be populated here -->
+            </div>
+            
+            <button class="btn" onclick="addNewAttendee()">I'M NOT ON THE LIST - ADD ME</button>
+            <button class="btn" id="checkinBtn" onclick="checkInToEvent()" style="display: none;">CHECK IN TO EVENT</button>
+            <button class="btn btn-secondary" onclick="goBackToSuccess()">BACK</button>
+        </div>
+        
+        <!-- Networking Screen -->
+        <div id="networkingScreen" class="screen">
+            <h3 style="margin-bottom: 16px; font-size: 20px;">Find Your Connections</h3>
+            
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="background: rgba(109, 212, 236, 0.1); padding: 12px; border-radius: 12px; font-size: 14px; color: #666666;">
+                    <span id="currentCard">1</span> of <span id="totalCards">0</span> people
+                </div>
+            </div>
+            
+            <div style="position: relative; height: 400px; margin-bottom: 32px; border-radius: 16px; background: rgba(0,0,0,0.05);" id="cardStack">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666666;">
+                    <div style="font-size: 32px; margin-bottom: 16px;">👥</div>
+                    <div>Loading profiles...</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: center; gap: 48px; margin-bottom: 24px;">
+                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #000000; color: #ffffff; font-size: 24px; cursor: pointer;" onclick="swipeLeft()">✕</button>
+                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #6dd4ec; color: #000000; font-size: 24px; cursor: pointer;" onclick="swipeRight()">❤</button>
+            </div>
+            
+            <div id="matchesSection" style="display: none; background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px;">
+                <h4 style="margin-bottom: 12px;">🔥 Your Matches</h4>
+                <div id="matchesList"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
+        </div>
     </div>
     
     <script>
@@ -213,6 +389,48 @@
         // App State
         let currentUser = null;
         let allUsers = [];
+        let checkedInUsers = [];
+        let preRegisteredAttendees = [];
+        let currentCardIndex = 0;
+        let profileCards = [];
+        let swipes = {};
+        let matches = [];
+        let selectedAttendeeId = null;
+        
+        // Pre-registered attendees from tonight's event
+        const tonightAttendees = [
+            { name: "Farhiya Aden", ticketType: "Early Bird" },
+            { name: "Eman Ahmed", ticketType: "Early Bird" },
+            { name: "Randy Ai", ticketType: "Last Call Admission" },
+            { name: "Jasmine Amaso", ticketType: "General Admission" },
+            { name: "Suzanne Armengol", ticketType: "General Admission" },
+            { name: "Adam Atkins", ticketType: "General Admission" },
+            { name: "Matthieu Bonelli", ticketType: "General Admission" },
+            { name: "Christian Bozic", ticketType: "Last Call Admission" },
+            { name: "Jeremy Breton", ticketType: "General Admission" },
+            { name: "Paulina Castillo", ticketType: "Early Bird" },
+            { name: "Philip Eappen", ticketType: "Last Call Admission" },
+            { name: "Mohamed El Tayeib", ticketType: "General Admission" },
+            { name: "Jackie Frydman", ticketType: "Early Bird" },
+            { name: "Adam Gormley", ticketType: "General Admission" },
+            { name: "Lesley Govender", ticketType: "General Admission" },
+            { name: "Karmin Habibi", ticketType: "Early Bird" },
+            { name: "Jutta Hoffmann", ticketType: "General Admission" },
+            { name: "Danielle Jennins", ticketType: "General Admission" },
+            { name: "Avaneesh Kurup", ticketType: "Early Bird" },
+            { name: "Gary Lamba", ticketType: "General Admission" },
+            { name: "Al Lopez", ticketType: "General Admission" },
+            { name: "Ali Malik", ticketType: "General Admission" },
+            { name: "Barbara Needham", ticketType: "Early Bird" },
+            { name: "Isaiah Nkemboh", ticketType: "Early Bird" },
+            { name: "Chris O'Brien", ticketType: "General Admission" },
+            { name: "Kirsten Oliver", ticketType: "General Admission" },
+            { name: "Craig Potter", ticketType: "General Admission" },
+            { name: "Dev Ravindran", ticketType: "General Admission" },
+            { name: "Joyce Santos", ticketType: "Early Bird" },
+            { name: "Ponraman Vijayakumar", ticketType: "Early Bird" },
+            { name: "Fouad Zaher", ticketType: "Last Call Admission" }
+        ];
         
         // Screen Navigation
         function showScreen(screenId) {
@@ -290,11 +508,343 @@
         }
         
         function joinEvent() {
-            alert('Event check-in feature coming next! For now, enjoy networking tonight.');
+            showScreen('checkinScreen');
+            loadPreRegisteredAttendees();
         }
         
         function showDashboard() {
-            alert('Dashboard feature coming next! For now, enjoy networking tonight.');
+            alert('Full dashboard coming soon! For now, enjoy networking at the event.');
+        }
+        
+        function goBackToSuccess() {
+            showScreen('successScreen');
+        }
+        
+        // Load pre-registered attendees
+        function loadPreRegisteredAttendees() {
+            preRegisteredAttendees = tonightAttendees.map((attendee, index) => ({
+                id: 'prereg_' + index,
+                name: attendee.name,
+                ticketType: attendee.ticketType,
+                isPreRegistered: true
+            }));
+            renderAttendeeList();
+            updateCheckedInCount();
+        }
+        
+        // Render attendee list
+        function renderAttendeeList() {
+            const attendeeList = document.getElementById('attendeeList');
+            const allAttendees = [...preRegisteredAttendees, ...checkedInUsers.filter(u => !u.isPreRegistered)];
+            
+            attendeeList.innerHTML = allAttendees.map(attendee => `
+                <div class="attendee-item" onclick="selectAttendee('${attendee.id}', '${attendee.name}')">
+                    <div class="attendee-info">
+                        <div class="attendee-name">${attendee.name}</div>
+                        <div class="attendee-ticket">${attendee.ticketType || 'Added at event'}</div>
+                    </div>
+                    <div class="check-icon">✓</div>
+                </div>
+            `).join('');
+        }
+        
+        // Filter attendees
+        function filterAttendees() {
+            const search = document.getElementById('attendeeSearch').value.toLowerCase();
+            const attendeeItems = document.querySelectorAll('.attendee-item');
+            
+            attendeeItems.forEach(item => {
+                const name = item.querySelector('.attendee-name').textContent.toLowerCase();
+                if (name.includes(search)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Select attendee for check-in
+        function selectAttendee(attendeeId, attendeeName) {
+            // Clear previous selections
+            document.querySelectorAll('.attendee-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current attendee
+            event.target.closest('.attendee-item').classList.add('selected');
+            
+            // Store selected attendee
+            selectedAttendeeId = attendeeId;
+            
+            // Show check-in button
+            document.getElementById('checkinBtn').style.display = 'block';
+        }
+        
+        // Add new attendee
+        function addNewAttendee() {
+            if (!currentUser) {
+                alert('Please create an account first');
+                return;
+            }
+            
+            const newAttendee = {
+                id: currentUser.id,
+                name: currentUser.fullName,
+                ticketType: 'Added at event',
+                isPreRegistered: false
+            };
+            
+            preRegisteredAttendees.push(newAttendee);
+            renderAttendeeList();
+            
+            // Auto-select the new attendee
+            setTimeout(() => {
+                selectAttendee(newAttendee.id, newAttendee.name);
+            }, 100);
+        }
+        
+        // Check in to event
+        function checkInToEvent() {
+            if (!selectedAttendeeId) {
+                alert('Please select your name from the list');
+                return;
+            }
+            
+            // Add user to checked-in list
+            const checkedInUser = {
+                ...currentUser,
+                checkedInAt: new Date().toISOString(),
+                attendeeId: selectedAttendeeId,
+                business: currentUser.business || 'Entrepreneur',
+                industry: currentUser.industry || 'Business'
+            };
+            
+            checkedInUsers.push(checkedInUser);
+            
+            // Save to Firebase
+            if (isFirebaseAvailable) {
+                database.ref('checkedInUsers/' + currentUser.id).set(checkedInUser);
+            }
+            
+            // Update count
+            updateCheckedInCount();
+            
+            // Go to networking
+            showScreen('networkingScreen');
+            loadProfiles();
+        }
+        
+        // Update checked-in count
+        function updateCheckedInCount() {
+            document.getElementById('checkedInCount').textContent = `${checkedInUsers.length}`;
+        }
+        
+        // Networking Functions
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+        }
+        
+        function createProfileCard(profile) {
+            return `
+                <div class="profile-card" data-user-id="${profile.id}">
+                    <div class="profile-avatar">${getInitials(profile.fullName || profile.name)}</div>
+                    <div class="profile-name">${profile.fullName || profile.name}</div>
+                    <div class="profile-business">${profile.business || 'Entrepreneur'}</div>
+                    <div class="profile-details">
+                        ${profile.industry ? `Industry: ${profile.industry}<br>` : ''}
+                        ${profile.email ? `Email: ${profile.email}<br>` : ''}
+                        Looking to connect with fellow entrepreneurs
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadProfiles() {
+            const cardStack = document.getElementById('cardStack');
+            const otherUsers = checkedInUsers.filter(user => user.id !== currentUser.id);
+            
+            profileCards = otherUsers;
+            document.getElementById('totalCards').textContent = profileCards.length;
+            
+            if (profileCards.length === 0) {
+                cardStack.innerHTML = `
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666666;">
+                        <div style="font-size: 32px; margin-bottom: 16px;">😊</div>
+                        <div>No other attendees yet!</div>
+                        <div style="font-size: 12px; margin-top: 8px;">More people will appear as they check in</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Load first card
+            cardStack.innerHTML = '';
+            if (profileCards.length > 0) {
+                cardStack.innerHTML = createProfileCard(profileCards[0]);
+            }
+            
+            currentCardIndex = 0;
+            updateCounter();
+            addSwipeEvents();
+        }
+        
+        function addSwipeEvents() {
+            const topCard = document.querySelector('.profile-card');
+            if (!topCard) return;
+            
+            let isDragging = false;
+            let startX = 0;
+            let currentX = 0;
+            
+            topCard.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            topCard.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', endDrag);
+            
+            function startDrag(e) {
+                isDragging = true;
+                startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+                topCard.classList.add('dragging');
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                currentX = (e.type === 'mousemove' ? e.clientX : e.touches[0].clientX) - startX;
+                const rotation = currentX * 0.1;
+                
+                topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+            }
+            
+            function endDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                topCard.classList.remove('dragging');
+                
+                if (Math.abs(currentX) > 100) {
+                    if (currentX > 0) {
+                        swipeRight();
+                    } else {
+                        swipeLeft();
+                    }
+                } else {
+                    topCard.style.transform = '';
+                }
+                
+                currentX = 0;
+            }
+        }
+        
+        function swipeLeft() {
+            const topCard = document.querySelector('.profile-card');
+            if (!topCard) return;
+            
+            const userId = topCard.dataset.userId;
+            recordSwipe(userId, false);
+            
+            topCard.classList.add('swiped-left');
+            setTimeout(nextCard, 300);
+        }
+        
+        function swipeRight() {
+            const topCard = document.querySelector('.profile-card');
+            if (!topCard) return;
+            
+            const userId = topCard.dataset.userId;
+            recordSwipe(userId, true);
+            
+            topCard.classList.add('swiped-right');
+            setTimeout(nextCard, 300);
+        }
+        
+        function recordSwipe(userId, isLike) {
+            if (!swipes[currentUser.id]) {
+                swipes[currentUser.id] = {};
+            }
+            swipes[currentUser.id][userId] = isLike;
+            
+            // Check for match
+            if (isLike && swipes[userId] && swipes[userId][currentUser.id]) {
+                // It's a match!
+                const matchedUser = checkedInUsers.find(u => u.id === userId);
+                const match = {
+                    user1: currentUser,
+                    user2: matchedUser,
+                    timestamp: new Date().toISOString()
+                };
+                
+                matches.push(match);
+                showMatch(match);
+                updateMatches();
+                
+                // Save to Firebase
+                if (isFirebaseAvailable) {
+                    database.ref('matches/' + currentUser.id + '_' + userId).set(match);
+                }
+            }
+            
+            // Save swipe to Firebase
+            if (isFirebaseAvailable) {
+                database.ref('swipes/' + currentUser.id + '/' + userId).set(isLike);
+            }
+        }
+        
+        function nextCard() {
+            currentCardIndex++;
+            updateCounter();
+            
+            const cardStack = document.getElementById('cardStack');
+            
+            if (currentCardIndex >= profileCards.length) {
+                cardStack.innerHTML = `
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666666;">
+                        <div style="font-size: 32px; margin-bottom: 16px;">🎉</div>
+                        <div>All done!</div>
+                        <div style="font-size: 12px; margin-top: 8px;">Check your matches below</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Load next card
+            cardStack.innerHTML = createProfileCard(profileCards[currentCardIndex]);
+            setTimeout(addSwipeEvents, 50);
+        }
+        
+        function updateCounter() {
+            document.getElementById('currentCard').textContent = Math.min(currentCardIndex + 1, profileCards.length);
+        }
+        
+        function showMatch(match) {
+            const otherUser = match.user2;
+            alert(`🎉 It's a Match! 🎉\n\nYou and ${otherUser.fullName || otherUser.name} both want to connect!\n\nFind them at the event and say hello!`);
+        }
+        
+        function updateMatches() {
+            const matchesList = document.getElementById('matchesList');
+            const matchesSection = document.getElementById('matchesSection');
+            
+            const userMatches = matches.filter(match => 
+                match.user1.id === currentUser.id || match.user2.id === currentUser.id
+            );
+            
+            if (userMatches.length > 0) {
+                matchesList.innerHTML = userMatches.map(match => {
+                    const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
+                    return `
+                        <div style="background: rgba(255,255,255,0.8); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                            <div style="font-weight: 600;">${otherUser.fullName || otherUser.name}</div>
+                            <div style="font-size: 12px; color: #666;">${otherUser.business || 'Entrepreneur'}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+                matchesSection.style.display = 'block';
+            }
         }
         
         // Load existing users from Firebase
@@ -303,7 +853,32 @@
                 const data = snapshot.val();
                 allUsers = data ? Object.values(data) : [];
             });
+            
+            database.ref('checkedInUsers').on('value', (snapshot) => {
+                const data = snapshot.val();
+                checkedInUsers = data ? Object.values(data) : [];
+                updateCheckedInCount();
+            });
+            
+            database.ref('swipes').on('value', (snapshot) => {
+                const data = snapshot.val();
+                swipes = data || {};
+            });
+            
+            database.ref('matches').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    matches = Object.values(data);
+                    updateMatches();
+                }
+            });
         }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // App is ready - welcome screen shows by default
+            console.log('ProLink app initialized');
+        });
     </script>
 </body>
 </html>
