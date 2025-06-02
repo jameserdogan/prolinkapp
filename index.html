@@ -72,11 +72,23 @@
             cursor: pointer;
             margin-bottom: 12px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
         .btn:hover {
             background: #5bc4da;
             transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0px);
+        }
+        
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .btn-secondary {
@@ -88,6 +100,28 @@
         .btn-secondary:hover {
             background: #6dd4ec;
             color: #000000;
+        }
+        
+        .btn-loading {
+            color: transparent;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #000000;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .input-group {
@@ -115,6 +149,24 @@
             outline: none;
             border-color: #6dd4ec;
             box-shadow: 0 0 0 3px rgba(109, 212, 236, 0.1);
+        }
+        
+        .input-error {
+            border-color: #ff4757 !important;
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2ed573;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
         }
         
         /* Attendee List Styles */
@@ -233,9 +285,39 @@
             font-size: 14px;
             line-height: 1.5;
         }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2ed573;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification.error {
+            background: #ff4757;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100%); }
+            to { transform: translateX(-50%) translateY(0); }
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
         <div class="header">
             <div class="logo">ProLink</div>
@@ -262,17 +344,26 @@
         <div id="createAccountScreen" class="screen">
             <h3 style="margin-bottom: 24px; font-size: 20px;">Create Your Account</h3>
             
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="signupEmail" placeholder="your@email.com" required>
-            </div>
-            
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" id="signupName" placeholder="Enter your full name" required>
-            </div>
-            
-            <button class="btn" onclick="createAccount()">CONTINUE</button>
+            <form id="signupForm" onsubmit="createAccount(event)">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required>
+                    <div class="error-message" id="nameError">Please enter your full name</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Business/Company (Optional)</label>
+                    <input type="text" id="signupBusiness" placeholder="Your company or role">
+                </div>
+                
+                <button type="submit" class="btn" id="createAccountBtn">CREATE ACCOUNT</button>
+            </form>
             <button class="btn btn-secondary" onclick="goBack()">BACK</button>
         </div>
         
@@ -280,12 +371,15 @@
         <div id="loginScreen" class="screen">
             <h3 style="margin-bottom: 24px; font-size: 20px;">Welcome Back</h3>
             
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" id="loginEmail" placeholder="your@email.com" required>
-            </div>
-            
-            <button class="btn" onclick="loginUser()">LOGIN</button>
+            <form id="loginForm" onsubmit="loginUser(event)">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                    <div class="error-message" id="loginEmailError">Please enter a valid email address</div>
+                </div>
+                
+                <button type="submit" class="btn" id="loginBtn">LOGIN</button>
+            </form>
             <button class="btn btn-secondary" onclick="goBack()">BACK</button>
         </div>
         
@@ -294,7 +388,7 @@
             <div style="text-align: center;">
                 <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
                 <h3 style="margin-bottom: 16px; font-size: 20px;">You're All Set!</h3>
-                <p style="color: #666666; margin-bottom: 24px;">Welcome to ProLink. You can now join tonight's networking event.</p>
+                <p style="color: #666666; margin-bottom: 24px;" id="welcomeMessage">Welcome to ProLink. You can now join tonight's networking event.</p>
                 
                 <button class="btn" onclick="joinEvent()">JOIN TONIGHT'S EVENT</button>
                 <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
@@ -318,14 +412,14 @@
             
             <div class="input-group">
                 <label>Search for your name</label>
-                <input type="text" id="attendeeSearch" placeholder="Type your name..." onkeyup="filterAttendees()">
+                <input type="text" id="attendeeSearch" placeholder="Type your name..." onkeyup="filterAttendees()" oninput="filterAttendees()">
             </div>
             
             <div style="max-height: 300px; overflow-y: auto; border: 2px solid #e0e0e0; border-radius: 12px; margin-bottom: 16px;" id="attendeeList">
                 <!-- Attendee list will be populated here -->
             </div>
             
-            <button class="btn" onclick="addNewAttendee()">I'M NOT ON THE LIST - ADD ME</button>
+            <button class="btn" onclick="addNewAttendee()" id="addAttendeeBtn">I'M NOT ON THE LIST - ADD ME</button>
             <button class="btn" id="checkinBtn" onclick="checkInToEvent()" style="display: none;">CHECK IN TO EVENT</button>
             <button class="btn btn-secondary" onclick="goBackToSuccess()">BACK</button>
         </div>
@@ -348,16 +442,17 @@
             </div>
             
             <div style="display: flex; justify-content: center; gap: 48px; margin-bottom: 24px;">
-                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #000000; color: #ffffff; font-size: 24px; cursor: pointer;" onclick="swipeLeft()">✕</button>
-                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #6dd4ec; color: #000000; font-size: 24px; cursor: pointer;" onclick="swipeRight()">❤</button>
+                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #000000; color: #ffffff; font-size: 24px; cursor: pointer; transition: all 0.3s ease;" onclick="swipeLeft()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">✕</button>
+                <button style="width: 64px; height: 64px; border-radius: 50%; border: none; background: #6dd4ec; color: #000000; font-size: 24px; cursor: pointer; transition: all 0.3s ease;" onclick="swipeRight()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">❤</button>
             </div>
             
-            <div id="matchesSection" style="display: none; background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px;">
+            <div id="matchesSection" style="display: none; background: rgba(109, 212, 236, 0.1); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
                 <h4 style="margin-bottom: 12px;">🔥 Your Matches</h4>
                 <div id="matchesList"></div>
             </div>
             
             <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
+            <button class="btn" onclick="goBackToCheckin()">BACK TO CHECK-IN</button>
         </div>
     </div>
     
@@ -381,6 +476,7 @@
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
             isFirebaseAvailable = true;
+            console.log('Firebase initialized successfully');
         } catch (error) {
             console.log('Firebase not available, using local storage fallback');
             isFirebaseAvailable = false;
@@ -432,6 +528,48 @@
             { name: "Fouad Zaher", ticketType: "Last Call Admission" }
         ];
         
+        // Utility Functions
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification show ${isError ? 'error' : ''}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function setButtonLoading(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            if (isLoading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+            }
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('input-error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+        
+        function clearError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.remove('input-error');
+            error.style.display = 'none';
+        }
+        
         // Screen Navigation
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
@@ -442,30 +580,62 @@
         
         function showCreateAccount() {
             showScreen('createAccountScreen');
+            document.getElementById('signupEmail').focus();
         }
         
         function showLogin() {
             showScreen('loginScreen');
+            document.getElementById('loginEmail').focus();
         }
         
         function goBack() {
             showScreen('welcomeScreen');
         }
         
+        function goBackToSuccess() {
+            showScreen('successScreen');
+        }
+        
+        function goBackToCheckin() {
+            showScreen('checkinScreen');
+        }
+        
         // Account Functions
-        function createAccount() {
-            const email = document.getElementById('signupEmail').value;
-            const name = document.getElementById('signupName').value;
+        function createAccount(event) {
+            event.preventDefault();
             
-            if (!email || !name) {
-                alert('Please fill in all fields');
-                return;
+            const email = document.getElementById('signupEmail').value.trim();
+            const name = document.getElementById('signupName').value.trim();
+            const business = document.getElementById('signupBusiness').value.trim();
+            
+            // Clear previous errors
+            clearError('signupEmail', 'emailError');
+            clearError('signupName', 'nameError');
+            
+            let hasError = false;
+            
+            // Validate email
+            if (!email || !validateEmail(email)) {
+                showError('signupEmail', 'emailError', 'Please enter a valid email address');
+                hasError = true;
             }
+            
+            // Validate name
+            if (!name || name.length < 2) {
+                showError('signupName', 'nameError', 'Please enter your full name');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            setButtonLoading('createAccountBtn', true);
             
             // Check if user already exists
             const existingUser = allUsers.find(user => user.email === email);
             if (existingUser) {
-                alert('Account with this email already exists. Please login instead.');
+                setButtonLoading('createAccountBtn', false);
+                showNotification('Account with this email already exists. Please login instead.', true);
+                setTimeout(() => showLogin(), 2000);
                 return;
             }
             
@@ -474,50 +644,84 @@
                 id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                 email: email,
                 fullName: name,
+                business: business || 'Entrepreneur',
                 timestamp: new Date().toISOString()
             };
             
             // Save user
-            if (isFirebaseAvailable) {
-                database.ref('users/' + currentUser.id).set(currentUser);
+            try {
+                if (isFirebaseAvailable) {
+                    database.ref('users/' + currentUser.id).set(currentUser).then(() => {
+                        setButtonLoading('createAccountBtn', false);
+                        allUsers.push(currentUser);
+                        showNotification('Account created successfully!');
+                        document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`;
+                        showScreen('successScreen');
+                    }).catch((error) => {
+                        setButtonLoading('createAccountBtn', false);
+                        showNotification('Error creating account. Please try again.', true);
+                        console.error('Firebase error:', error);
+                    });
+                } else {
+                    // Local storage fallback
+                    allUsers.push(currentUser);
+                    setButtonLoading('createAccountBtn', false);
+                    showNotification('Account created successfully!');
+                    document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`;
+                    showScreen('successScreen');
+                }
+            } catch (error) {
+                setButtonLoading('createAccountBtn', false);
+                showNotification('Error creating account. Please try again.', true);
+                console.error('Error:', error);
             }
-            allUsers.push(currentUser);
-            
-            // Show success
-            showScreen('successScreen');
         }
         
-        function loginUser() {
-            const email = document.getElementById('loginEmail').value;
+        function loginUser(event) {
+            event.preventDefault();
             
-            if (!email) {
-                alert('Please enter your email');
+            const email = document.getElementById('loginEmail').value.trim();
+            
+            clearError('loginEmail', 'loginEmailError');
+            
+            if (!email || !validateEmail(email)) {
+                showError('loginEmail', 'loginEmailError', 'Please enter a valid email address');
                 return;
             }
+            
+            setButtonLoading('loginBtn', true);
             
             // Find existing user
             const existingUser = allUsers.find(user => user.email === email);
             
-            if (existingUser) {
-                currentUser = existingUser;
-                showScreen('successScreen');
-            } else {
-                alert('Account not found. Please create a new account.');
-                showCreateAccount();
-            }
+            setTimeout(() => { // Simulate network delay
+                setButtonLoading('loginBtn', false);
+                
+                if (existingUser) {
+                    currentUser = existingUser;
+                    showNotification('Login successful!');
+                    document.getElementById('welcomeMessage').textContent = `Welcome back ${currentUser.fullName}!`;
+                    showScreen('successScreen');
+                } else {
+                    showNotification('Account not found. Please create a new account.', true);
+                    setTimeout(() => showCreateAccount(), 2000);
+                }
+            }, 1000);
         }
         
         function joinEvent() {
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                showCreateAccount();
+                return;
+            }
+            
             showScreen('checkinScreen');
             loadPreRegisteredAttendees();
         }
         
         function showDashboard() {
-            alert('Full dashboard coming soon! For now, enjoy networking at the event.');
-        }
-        
-        function goBackToSuccess() {
-            showScreen('successScreen');
+            showNotification('Full dashboard coming soon! For now, enjoy networking at the event.');
         }
         
         // Load pre-registered attendees
@@ -537,6 +741,16 @@
             const attendeeList = document.getElementById('attendeeList');
             const allAttendees = [...preRegisteredAttendees, ...checkedInUsers.filter(u => !u.isPreRegistered)];
             
+            if (allAttendees.length === 0) {
+                attendeeList.innerHTML = `
+                    <div style="padding: 20px; text-align: center; color: #666666;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">👥</div>
+                        <div>No attendees loaded yet</div>
+                    </div>
+                `;
+                return;
+            }
+            
             attendeeList.innerHTML = allAttendees.map(attendee => `
                 <div class="attendee-item" onclick="selectAttendee('${attendee.id}', '${attendee.name}')">
                     <div class="attendee-info">
@@ -553,14 +767,26 @@
             const search = document.getElementById('attendeeSearch').value.toLowerCase();
             const attendeeItems = document.querySelectorAll('.attendee-item');
             
+            let visibleCount = 0;
             attendeeItems.forEach(item => {
                 const name = item.querySelector('.attendee-name').textContent.toLowerCase();
                 if (name.includes(search)) {
                     item.style.display = 'flex';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+            
+            // If search term matches current user's name exactly, auto-select it
+            if (currentUser && search && currentUser.fullName.toLowerCase().includes(search)) {
+                const matchingItem = Array.from(attendeeItems).find(item => 
+                    item.querySelector('.attendee-name').textContent.toLowerCase().includes(search)
+                );
+                if (matchingItem && matchingItem.style.display !== 'none') {
+                    matchingItem.click();
+                }
+            }
         }
         
         // Select attendee for check-in
@@ -578,12 +804,35 @@
             
             // Show check-in button
             document.getElementById('checkinBtn').style.display = 'block';
+            showNotification(`Selected: ${attendeeName}`);
         }
         
         // Add new attendee
         function addNewAttendee() {
             if (!currentUser) {
-                alert('Please create an account first');
+                showNotification('Please create an account first', true);
+                return;
+            }
+            
+            // Check if user is already in the list
+            const existingAttendee = preRegisteredAttendees.find(attendee => 
+                attendee.name.toLowerCase() === currentUser.fullName.toLowerCase()
+            );
+            
+            if (existingAttendee) {
+                showNotification('You are already on the list! Please select your name.');
+                // Auto-select the existing attendee
+                setTimeout(() => {
+                    selectAttendee(existingAttendee.id, existingAttendee.name);
+                    // Find and highlight the item
+                    const attendeeItems = document.querySelectorAll('.attendee-item');
+                    attendeeItems.forEach(item => {
+                        if (item.querySelector('.attendee-name').textContent === existingAttendee.name) {
+                            item.classList.add('selected');
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                }, 1000);
                 return;
             }
             
@@ -596,17 +845,39 @@
             
             preRegisteredAttendees.push(newAttendee);
             renderAttendeeList();
+            showNotification('Added you to the attendee list!');
             
             // Auto-select the new attendee
             setTimeout(() => {
                 selectAttendee(newAttendee.id, newAttendee.name);
-            }, 100);
+                // Find and highlight the new item
+                const attendeeItems = document.querySelectorAll('.attendee-item');
+                const lastItem = attendeeItems[attendeeItems.length - 1];
+                if (lastItem) {
+                    lastItem.classList.add('selected');
+                    lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 500);
         }
         
         // Check in to event
         function checkInToEvent() {
             if (!selectedAttendeeId) {
-                alert('Please select your name from the list');
+                showNotification('Please select your name from the list', true);
+                return;
+            }
+            
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                return;
+            }
+            
+            // Check if user is already checked in
+            const alreadyCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
+            if (alreadyCheckedIn) {
+                showNotification('You are already checked in!');
+                showScreen('networkingScreen');
+                loadProfiles();
                 return;
             }
             
@@ -623,15 +894,23 @@
             
             // Save to Firebase
             if (isFirebaseAvailable) {
-                database.ref('checkedInUsers/' + currentUser.id).set(checkedInUser);
+                database.ref('checkedInUsers/' + currentUser.id).set(checkedInUser).then(() => {
+                    showNotification('Successfully checked in!');
+                }).catch((error) => {
+                    console.error('Firebase error:', error);
+                });
             }
             
             // Update count
             updateCheckedInCount();
             
+            showNotification('Successfully checked in! Ready to network!');
+            
             // Go to networking
-            showScreen('networkingScreen');
-            loadProfiles();
+            setTimeout(() => {
+                showScreen('networkingScreen');
+                loadProfiles();
+            }, 1500);
         }
         
         // Update checked-in count
@@ -652,7 +931,7 @@
                     <div class="profile-business">${profile.business || 'Entrepreneur'}</div>
                     <div class="profile-details">
                         ${profile.industry ? `Industry: ${profile.industry}<br>` : ''}
-                        ${profile.email ? `Email: ${profile.email}<br>` : ''}
+                        ${profile.email ? `Contact: ${profile.email}<br>` : ''}
                         Looking to connect with fellow entrepreneurs
                     </div>
                 </div>
@@ -681,11 +960,11 @@
             cardStack.innerHTML = '';
             if (profileCards.length > 0) {
                 cardStack.innerHTML = createProfileCard(profileCards[0]);
+                addSwipeEvents();
             }
             
             currentCardIndex = 0;
             updateCounter();
-            addSwipeEvents();
         }
         
         function addSwipeEvents() {
@@ -696,17 +975,21 @@
             let startX = 0;
             let currentX = 0;
             
+            // Mouse events
             topCard.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
-            topCard.addEventListener('touchstart', startDrag);
-            document.addEventListener('touchmove', drag);
+            
+            // Touch events
+            topCard.addEventListener('touchstart', startDrag, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
             document.addEventListener('touchend', endDrag);
             
             function startDrag(e) {
                 isDragging = true;
                 startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
                 topCard.classList.add('dragging');
+                e.preventDefault();
             }
             
             function drag(e) {
@@ -717,6 +1000,15 @@
                 const rotation = currentX * 0.1;
                 
                 topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+                
+                // Visual feedback
+                if (currentX > 50) {
+                    topCard.style.borderTopColor = '#2ed573';
+                } else if (currentX < -50) {
+                    topCard.style.borderTopColor = '#ff4757';
+                } else {
+                    topCard.style.borderTopColor = '#6dd4ec';
+                }
             }
             
             function endDrag() {
@@ -724,6 +1016,7 @@
                 isDragging = false;
                 
                 topCard.classList.remove('dragging');
+                topCard.style.borderTopColor = '#6dd4ec';
                 
                 if (Math.abs(currentX) > 100) {
                     if (currentX > 0) {
@@ -821,7 +1114,9 @@
         
         function showMatch(match) {
             const otherUser = match.user2;
-            alert(`🎉 It's a Match! 🎉\n\nYou and ${otherUser.fullName || otherUser.name} both want to connect!\n\nFind them at the event and say hello!`);
+            setTimeout(() => {
+                showNotification(`🎉 It's a Match with ${otherUser.fullName || otherUser.name}! Find them at the event!`);
+            }, 500);
         }
         
         function updateMatches() {
@@ -839,6 +1134,7 @@
                         <div style="background: rgba(255,255,255,0.8); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
                             <div style="font-weight: 600;">${otherUser.fullName || otherUser.name}</div>
                             <div style="font-size: 12px; color: #666;">${otherUser.business || 'Entrepreneur'}</div>
+                            ${otherUser.email ? `<div style="font-size: 10px; color: #999; margin-top: 4px;">${otherUser.email}</div>` : ''}
                         </div>
                     `;
                 }).join('');
@@ -847,17 +1143,24 @@
             }
         }
         
-        // Load existing users from Firebase
+        // Load existing data from Firebase on startup
         if (isFirebaseAvailable) {
             database.ref('users').on('value', (snapshot) => {
                 const data = snapshot.val();
                 allUsers = data ? Object.values(data) : [];
+                console.log('Loaded users:', allUsers.length);
             });
             
             database.ref('checkedInUsers').on('value', (snapshot) => {
                 const data = snapshot.val();
                 checkedInUsers = data ? Object.values(data) : [];
                 updateCheckedInCount();
+                console.log('Loaded checked-in users:', checkedInUsers.length);
+                
+                // If user is on networking screen, update profiles
+                if (document.getElementById('networkingScreen').classList.contains('active')) {
+                    loadProfiles();
+                }
             });
             
             database.ref('swipes').on('value', (snapshot) => {
@@ -876,8 +1179,27 @@
         
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            // App is ready - welcome screen shows by default
             console.log('ProLink app initialized');
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('networkingScreen').classList.contains('active')) {
+                    if (e.key === 'ArrowLeft') swipeLeft();
+                    if (e.key === 'ArrowRight') swipeRight();
+                }
+            });
+            
+            // Add form validation on input
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const errorElement = this.parentNode.querySelector('.error-message');
+                    if (errorElement && errorElement.style.display === 'block') {
+                        this.classList.remove('input-error');
+                        errorElement.style.display = 'none';
+                    }
+                });
+            });
         });
     </script>
 </body>
