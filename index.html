@@ -404,6 +404,9 @@
             <button class="btn" onclick="showCreateAccount()">CREATE ACCOUNT</button>
             <button class="btn btn-secondary" onclick="showLogin()">LOGIN</button>
             
+            <!-- Temporary dashboard access for testing -->
+            <button class="btn" onclick="showScreen('dashboardScreen'); loadDashboardData();" style="background: #ffa502; font-size: 12px; margin-top: 16px;">🔧 TEST DASHBOARD</button>
+            
             <div style="text-align: center; margin-top: 20px; color: #999999; font-size: 12px;">
                 Join tonight's networking event
             </div>
@@ -590,7 +593,16 @@
                 if (user) {
                     console.log('User is signed in:', user.email);
                     // Load user profile data
-                    loadUserProfile(user);
+                    loadUserProfile(user).then(() => {
+                        // Only auto-navigate to dashboard if we're on the welcome screen
+                        const currentScreen = document.querySelector('.screen.active');
+                        if (currentScreen && currentScreen.id === 'welcomeScreen') {
+                            setTimeout(() => {
+                                showScreen('dashboardScreen');
+                                loadDashboardData();
+                            }, 500);
+                        }
+                    });
                 } else {
                     console.log('User is signed out');
                     currentUser = null;
@@ -802,10 +814,16 @@
         
         // Screen Navigation
         function showScreen(screenId) {
+            const targetScreen = document.getElementById(screenId);
+            if (!targetScreen) {
+                console.error('Screen not found:', screenId);
+                return;
+            }
+            
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            document.getElementById(screenId).classList.add('active');
+            targetScreen.classList.add('active');
         }
         
         function showCreateAccount() {
