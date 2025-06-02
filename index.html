@@ -1809,15 +1809,174 @@
             document.getElementById(sectionId).classList.add('active');
         }
         
+        // Simple auth functions
+        function createNewAccount() {
+            const email = document.getElementById('authEmail').value;
+            const name = document.getElementById('authName').value;
+            
+            if (!email || !name) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Check if user already exists
+            const existingUser = allUsers.find(user => user.email === email);
+            if (existingUser) {
+                alert('Account with this email already exists. Please login instead.');
+                return;
+            }
+            
+            // Store basic info temporarily
+            window.tempUser = {
+                email: email,
+                fullName: name,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Show skip button for new accounts
+            document.getElementById('skipProfileBtn').style.display = 'block';
+            
+            // Go to profile creation
+            showSection('profileCreationSection');
+        }
+        
+        function loginExisting() {
+            const email = document.getElementById('authEmail').value;
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            // Check for existing user
+            const existingUser = allUsers.find(user => user.email === email);
+            
+            if (existingUser) {
+                currentUser = existingUser;
+                
+                // Check if user is already checked in to current event
+                const isCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
+                
+                if (isCheckedIn) {
+                    // User is already checked in, go to dashboard
+                    showDashboard();
+                } else {
+                    // User needs to check in
+                    showSection('checkinSection');
+                }
+            } else {
+                alert('Account not found. Please create a new account.');
+            }
+        }
+        
+        function completeProfile() {
+            if (!window.tempUser) {
+                alert('Session expired. Please start over.');
+                showSection('authSection');
+                return;
+            }
+            
+            const formData = {
+                business: document.getElementById('business').value,
+                industry: document.getElementById('industry').value,
+                bio: document.getElementById('bio').value,
+                dubaiExperience: document.getElementById('dubaiExperience').value,
+                looking_for: [],
+                photo: document.getElementById('photoPreview').src
+            };
+            
+            // Get selected looking_for items
+            document.querySelectorAll('input[name="looking_for"]:checked').forEach(checkbox => {
+                formData.looking_for.push(checkbox.value);
+            });
+            
+            // Validate required fields
+            if (!formData.business || !formData.industry || !formData.dubaiExperience) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Check if this is an edit or new profile
+            if (window.tempUser.id) {
+                // Editing existing profile
+                currentUser = {
+                    ...currentUser,
+                    ...formData
+                };
+                
+                // Update in allUsers array
+                const userIndex = allUsers.findIndex(user => user.id === currentUser.id);
+                if (userIndex !== -1) {
+                    allUsers[userIndex] = currentUser;
+                }
+                
+                // Update in checkedInUsers if they're checked in
+                const checkedInIndex = checkedInUsers.findIndex(user => user.id === currentUser.id);
+                if (checkedInIndex !== -1) {
+                    checkedInUsers[checkedInIndex] = currentUser;
+                }
+            } else {
+                // Creating new profile
+                currentUser = {
+                    id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    ...window.tempUser,
+                    ...formData
+                };
+                
+                // Add to local state
+                allUsers.push(currentUser);
+            }
+            
+            // Save user to Firebase
+            saveUserToFirebase(currentUser);
+            
+            // Clear temp data
+            window.tempUser = null;
+            
+            // Go to dashboard
+            showDashboard();
+        }
+        
+        function skipProfile() {
+            if (!window.tempUser) {
+                alert('Session expired. Please start over.');
+                showSection('authSection');
+                return;
+            }
+            
+            // Create basic user object
+            currentUser = {
+                id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                ...window.tempUser,
+                business: 'Not specified',
+                industry: 'Other',
+                dubaiExperience: 'Not specified',
+                looking_for: [],
+                bio: ''
+            };
+            
+            // Save user to Firebase
+            saveUserToFirebase(currentUser);
+            
+            // Add to local state
+            allUsers.push(currentUser);
+            
+            // Clear temp data
+            window.tempUser = null;
+            
+            // Go to dashboard
+            showDashboard();
+        }
+        
         function showLogin() {
             showSection('loginSection');
         }
         
         function showAccountCreation() {
-            showSection('accountSection');
+            showSection('authSection');
         }
         
-        // Account creation
+        // Account creation (old function - now hidden)
         function createAccount() {
             const formData = {
                 fullName: document.getElementById('fullName').value,
@@ -1857,7 +2016,7 @@
             // Go to check-in
             showSection('checkinSection');
         }
-        
+
         // Login user
         function loginUser() {
             const email = document.getElementById('loginEmail').value;
@@ -2129,7 +2288,56 @@
         
         // Dashboard action functions
         function editProfile() {
-            alert('Edit profile functionality coming soon!');
+            if (!currentUser) return;
+            
+            // Pre-populate the profile creation form with current data
+            document.getElementById('business').value = currentUser.business || '';
+            document.getElementById('industry').value = currentUser.industry || '';
+            document.getElementById('bio').value = currentUser.bio || '';
+            document.getElementById('dubaiExperience').value = currentUser.dubaiExperience || '';
+            
+            // Pre-select looking_for checkboxes
+            document.querySelectorAll('input[name="looking_for"]').forEach(checkbox => {
+                checkbox.checked = currentUser.looking_for && currentUser.looking_for.includes(checkbox.value);
+                if (checkbox.checked) {
+                    checkbox.parentElement.classList.add('selected');
+                } else {
+                    checkbox.parentElement.classList.remove('selected');
+                }
+            });
+            
+            // Show photo if exists
+            if (currentUser.photo && currentUser.photo !== 'undefined') {
+                document.getElementById('photoPreview').src = currentUser.photo;
+                document.getElementById('photoPreview').style.display = 'block';
+                document.getElementById('photoPlaceholder').style.display = 'none';
+            }
+            
+            // Store current user as temp for editing
+            window.tempUser = {
+                email: currentUser.email,
+                fullName: currentUser.fullName,
+                id: currentUser.id,
+                timestamp: currentUser.timestamp
+            };
+            
+            // Hide skip button for editing
+            document.getElementById('skipProfileBtn').style.display = 'none';
+            
+            // Hide dashboard and show profile creation
+            document.getElementById('dashboardNav').classList.remove('active');
+            showSection('profileCreationSection');
+        }
+        
+        function cancelProfileEdit() {
+            // Clear temp data
+            window.tempUser = null;
+            
+            // Show skip button again
+            document.getElementById('skipProfileBtn').style.display = 'block';
+            
+            // Return to dashboard
+            showDashboard();
         }
         
         function joinNetworking() {
@@ -2162,8 +2370,13 @@
         function signOut() {
             if (confirm('Are you sure you want to sign out?')) {
                 currentUser = null;
-                showSection('accountSection');
+                window.tempUser = null;
+                showSection('authSection');
                 document.getElementById('dashboardNav').classList.remove('active');
+                
+                // Clear form fields
+                document.getElementById('authEmail').value = '';
+                document.getElementById('authName').value = '';
             }
         }
         
