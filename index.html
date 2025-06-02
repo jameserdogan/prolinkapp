@@ -412,7 +412,7 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
         
-        /* Swipe Screen Styles */
+        /* Main Card */
         .main-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -427,97 +427,178 @@
             position: relative;
         }
         
-        .swipe-controls {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
+        /* Directory and Categories Styles */
+        .directory-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
         }
         
-        .swipe-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+        .directory-card {
             background: var(--glass-bg);
-            color: var(--text-primary);
-            font-size: 24px;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            gap: 16px;
+        }
+        
+        .directory-card:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: var(--accent-color);
+            transform: translateX(4px);
+        }
+        
+        .directory-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
         }
         
-        .swipe-btn:hover {
-            transform: scale(1.1);
+        .directory-info {
+            flex: 1;
+            min-width: 0;
         }
         
-        .swipe-btn.reject {
-            color: var(--error-color);
-            border-color: var(--error-color);
+        .directory-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .swipe-btn.reject:hover {
-            background: rgba(248, 113, 113, 0.2);
-            box-shadow: 0 0 20px rgba(248, 113, 113, 0.5);
+        .directory-title {
+            font-size: 14px;
+            color: var(--accent-color);
+            margin-bottom: 2px;
         }
         
-        .swipe-btn.like {
-            color: var(--success-color);
-            border-color: var(--success-color);
+        .directory-company {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
         
-        .swipe-btn.like:hover {
-            background: rgba(74, 222, 128, 0.2);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        .directory-badge {
+            background: var(--glass-bg);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
         }
         
-        .swipe-btn.super-like {
-            color: #fbbf24;
-            border-color: #fbbf24;
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
         
-        .swipe-btn.super-like:hover {
-            background: rgba(251, 191, 36, 0.2);
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
-        }
-        
-        /* Profile Card */
-        .profile-card {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+        .category-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 32px;
+            padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            cursor: grab;
+            cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         
-        .profile-card::before {
+        .category-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
             background: var(--primary-gradient);
-            border-radius: 20px 20px 0 0;
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
         }
         
-        .profile-avatar {
+        .category-card:hover::before {
+            opacity: 1;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-2px);
+            border-color: transparent;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .category-icon {
+            font-size: 36px;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+        
+        .category-details {
+            text-align: left;
+        }
+        
+        .category-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .category-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .category-arrow {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+        
+        /* Contact Detail Styles */
+        .contact-detail-card {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .contact-avatar-large {
             width: 80px;
             height: 80px;
             background: var(--primary-gradient);
             border-radius: 50%;
-            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -527,86 +608,92 @@
             box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
         }
         
-        .profile-name {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff 0%, #d0d0d0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-fill-color: transparent;
-        }
-        
-        .profile-business {
-            font-size: 16px;
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        
-        .profile-details {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        /* Matches Grid */
-        .matches-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-        
-        .match-card {
-            background: var(--glass-bg);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .match-card:hover {
-            background: rgba(102, 126, 234, 0.1);
-            border-color: var(--accent-color);
-            transform: translateX(4px);
-        }
-        
-        .match-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            flex-shrink: 0;
-        }
-        
-        .match-info {
+        .contact-basic-info {
             flex: 1;
         }
         
-        .match-name {
+        .contact-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-action-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--glass-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .contact-action-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .info-section {
+            margin-bottom: 20px;
+        }
+        
+        .info-section-title {
+            font-size: 14px;
             font-weight: 600;
-            font-size: 16px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .info-item {
+            background: var(--glass-bg);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
             margin-bottom: 4px;
         }
         
-        .match-business {
+        .info-value {
             font-size: 14px;
-            color: var(--text-secondary);
+            font-weight: 500;
         }
         
-        .match-badge {
-            font-size: 20px;
+        /* Scrollbar styling */
+        .directory-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .directory-grid::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .directory-grid::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .directory-grid::-webkit-scrollbar-thumb:hover {
+            background: #7c8ff5;
         }
         
         /* Empty State */
@@ -842,7 +929,7 @@
     <div class="container">
         <div class="header">
             <div class="logo">ProLink AI</div>
-            <div class="subtitle">Smart Networking for Dubai Entrepreneurs</div>
+            <div class="subtitle">Dubai's Professional Directory & Networking Platform</div>
         </div>
         
         <!-- Dashboard Screen -->
@@ -852,7 +939,7 @@
                 <div class="dashboard-user-info">
                     <div>
                         <div class="dashboard-greeting">Hi <span id="dashboardUserName">Entrepreneur</span></div>
-                        <div class="dashboard-subtitle">Ready to connect?</div>
+                        <div class="dashboard-subtitle">Browse your professional network</div>
                     </div>
                     <div class="dashboard-actions">
                         <button class="dashboard-icon-btn" onclick="showNotification('AI insights coming soon!')">🤖</button>
@@ -872,20 +959,20 @@
             
             <!-- Feature Cards Grid -->
             <div class="dashboard-cards">
-                <!-- Matches Card -->
-                <div class="dashboard-card secondary" onclick="showMatchesScreen()">
-                    <div class="card-icon">🔥</div>
-                    <div class="card-title">Matches</div>
-                    <div class="card-value"><span id="totalMatchesMain">0</span></div>
-                    <div class="card-subtitle">connections</div>
+                <!-- Directory Card -->
+                <div class="dashboard-card secondary" onclick="showDirectoryScreen()">
+                    <div class="card-icon">📚</div>
+                    <div class="card-title">Directory</div>
+                    <div class="card-value"><span id="totalContactsCount">0</span></div>
+                    <div class="card-subtitle">contacts</div>
                 </div>
                 
-                <!-- Discover Card -->
-                <div class="dashboard-card secondary" onclick="showDiscoverScreen()">
-                    <div class="card-icon">💫</div>
-                    <div class="card-title">Discover</div>
-                    <div class="card-value"><span id="totalPeopleCount">0</span></div>
-                    <div class="card-subtitle">people to meet</div>
+                <!-- Categories Card -->
+                <div class="dashboard-card secondary" onclick="showCategoriesScreen()">
+                    <div class="card-icon">🏷️</div>
+                    <div class="card-title">Categories</div>
+                    <div class="card-value"><span id="totalCategoriesCount">0</span></div>
+                    <div class="card-subtitle">industries</div>
                 </div>
             </div>
             
@@ -902,7 +989,7 @@
                 <div class="dashboard-card secondary" onclick="showEventsScreen()">
                     <div class="card-icon">🎯</div>
                     <div class="card-title">Events</div>
-                    <div class="card-value">1</div>
+                    <div class="card-value"><span id="eventsAttendedCount">0</span></div>
                     <div class="card-subtitle">attended</div>
                 </div>
             </div>
@@ -910,81 +997,81 @@
             <!-- Stats Row -->
             <div class="stats-row">
                 <div class="stat-item">
-                    <div class="stat-number" id="totalLikesMain">0</div>
-                    <div class="stat-label">Likes Given</div>
+                    <div class="stat-number" id="connectionsCount">0</div>
+                    <div class="stat-label">Connections</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="totalSuperLikesMain">0</div>
-                    <div class="stat-label">Super Likes</div>
+                    <div class="stat-number" id="viewsCount">0</div>
+                    <div class="stat-label">Profile Views</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="networkingScore">85</div>
-                    <div class="stat-label">AI Score</div>
+                    <div class="stat-number" id="networkingScore">100</div>
+                    <div class="stat-label">Network Score</div>
                 </div>
             </div>
         </div>
         
-        <!-- Discover Screen -->
-        <div id="discoverScreen" class="screen">
+        <!-- Directory Screen -->
+        <div id="directoryScreen" class="screen">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 20px; margin: 0; font-weight: 700;">Discover People</h3>
+                <h3 style="font-size: 20px; margin: 0; font-weight: 700;">Professional Directory</h3>
                 <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
             </div>
             
-            <div style="text-align: center; margin-bottom: 16px;">
-                <div style="background: var(--glass-bg); padding: 8px 16px; border-radius: 12px; font-size: 12px; color: var(--text-secondary); display: inline-block; border: 1px solid rgba(255, 255, 255, 0.1);">
-                    <span id="dashboardCurrentCard">1</span> of <span id="dashboardTotalCards">0</span> people
-                </div>
+            <!-- Search Bar -->
+            <div class="input-group" style="margin-bottom: 20px;">
+                <input type="text" id="directorySearch" placeholder="Search by name, company, or role..." oninput="searchDirectory()">
             </div>
             
-            <!-- Main Card Stack -->
-            <div class="main-card" id="dashboardCardStack">
-                <div style="text-align: center;">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🤖</div>
-                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">AI-Powered Matching</div>
-                    <div style="font-size: 14px; margin-bottom: 24px; color: var(--text-secondary);">Check in to tonight's event to start smart networking!</div>
-                    <button class="btn" onclick="joinEvent()">CHECK IN TO EVENT</button>
-                </div>
+            <!-- Filter by Category -->
+            <div style="margin-bottom: 20px;">
+                <select id="categoryFilter" onchange="filterByCategory()" style="width: 100%;">
+                    <option value="">All Categories</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance & Banking</option>
+                    <option value="Real Estate">Real Estate</option>
+                                            <option value="Legal">Legal / Law</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Consulting">Consulting</option>
+                    <option value="Marketing">Marketing & PR</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Other">Other</option>
+                </select>
             </div>
             
-            <!-- Swipe Controls -->
-            <div class="swipe-controls">
-                <button class="swipe-btn reject" onclick="swipeLeft()" title="Pass">✕</button>
-                <button class="swipe-btn super-like" onclick="superLike()" title="Super Like">⭐</button>
-                <button class="swipe-btn like" onclick="swipeRight()" title="Like">❤️</button>
-            </div>
-        </div>
-        
-        <!-- Matches Screen -->
-        <div id="matchesScreen" class="screen">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 20px; margin: 0; font-weight: 700;">Your Matches</h3>
-                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
-            </div>
-            
-            <!-- Stats Row -->
-            <div class="stats-row" style="margin-bottom: 20px;">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalMatches">0</div>
-                    <div class="stat-label">Matches</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="totalLikes">0</div>
-                    <div class="stat-label">Likes</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="totalSuperLikes">0</div>
-                    <div class="stat-label">Super Likes</div>
-                </div>
-            </div>
-            
-            <!-- Matches List -->
-            <div id="dashboardMatchesGrid" class="matches-list">
+            <!-- Directory Grid -->
+            <div id="directoryGrid" class="directory-grid">
                 <div class="empty-state">
-                    <div class="empty-icon">💫</div>
-                    <div class="empty-title">No matches yet!</div>
-                    <div class="empty-subtitle">Start swiping to find your connections</div>
+                    <div class="empty-icon">📚</div>
+                    <div class="empty-title">No contacts yet</div>
+                    <div class="empty-subtitle">Directory will grow as more people attend events</div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Categories Screen -->
+        <div id="categoriesScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0; font-weight: 700;">Browse by Category</h3>
+                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
+            </div>
+            
+            <!-- Categories Grid -->
+            <div id="categoriesGrid" class="categories-grid">
+                <!-- Categories will be populated dynamically -->
+            </div>
+        </div>
+        
+        <!-- Contact Detail Screen -->
+        <div id="contactDetailScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0; font-weight: 700;">Contact Details</h3>
+                <button class="dashboard-icon-btn" onclick="goBackFromDetail()">←</button>
+            </div>
+            
+            <div id="contactDetailContent">
+                <!-- Contact details will be populated here -->
             </div>
         </div>
         
@@ -1045,10 +1132,12 @@
                         <option value="Finance">Finance & Banking</option>
                         <option value="Payments">Payments</option>
                         <option value="Real Estate">Real Estate</option>
+                        <option value="Legal">Legal / Law</option>
                         <option value="Healthcare">Healthcare</option>
                         <option value="Retail">Retail</option>
                         <option value="Hospitality">Hospitality</option>
                         <option value="Consulting">Consulting</option>
+                        <option value="Marketing">Marketing & PR</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -1174,14 +1263,14 @@
             <div style="text-align: center; margin-bottom: 32px;">
                 <div style="font-size: 64px; margin-bottom: 24px;">🤖</div>
                 <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 16px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome to ProLink AI</h2>
-                <p style="color: var(--text-secondary); font-size: 16px;">Smart networking for Dubai's top entrepreneurs</p>
+                <p style="color: var(--text-secondary); font-size: 16px;">Your digital rolodex for Dubai's business community</p>
             </div>
             
             <button class="btn" onclick="showCreateAccount()">CREATE ACCOUNT</button>
             <button class="btn btn-secondary" onclick="showLogin()">LOGIN</button>
             
             <div style="text-align: center; margin-top: 24px; color: var(--text-secondary); font-size: 12px;">
-                AI-powered matching • Real connections • Premium events
+                Build your professional network • Browse by industry • Connect at events
             </div>
         </div>
         
@@ -1375,10 +1464,6 @@
         let allUsers = [];
         let checkedInUsers = [];
         let preRegisteredAttendees = [];
-        let currentCardIndex = 0;
-        let profileCards = [];
-        let swipes = {};
-        let matches = [];
         let selectedAttendeeId = null;
         
         // Pre-registered attendees from tonight's event
@@ -1954,333 +2039,295 @@
             // Update checked in count
             document.getElementById('dashboardCheckedInCount').textContent = checkedInUsers.length;
             
-            // Update people count
-            document.getElementById('totalPeopleCount').textContent = checkedInUsers.length;
+            // Update total contacts count
+            const totalContacts = getAllEventAttendees().length;
+            document.getElementById('totalContactsCount').textContent = totalContacts;
             
-            // Update match counts
-            updateDashboardStats();
-        }
-        
-        function updateDashboardStats() {
-            // Count likes and matches
-            let totalLikes = 0;
-            let totalSuperLikes = 0;
-            let totalMatches = 0;
+            // Update categories count
+            const categories = getUniqueCategories();
+            document.getElementById('totalCategoriesCount').textContent = categories.length;
             
-            if (currentUser && swipes[currentUser.id]) {
-                Object.values(swipes[currentUser.id]).forEach(swipe => {
-                    if (swipe === true) totalLikes++;
-                    if (swipe === 'super_like') totalSuperLikes++;
-                });
-            }
-            
-            // Count matches
-            const userMatches = matches.filter(match => 
-                match.user1.id === currentUser.id || match.user2.id === currentUser.id
-            );
-            totalMatches = userMatches.length;
-            
-            // Update UI
-            document.getElementById('totalLikesMain').textContent = totalLikes;
-            document.getElementById('totalSuperLikesMain').textContent = totalSuperLikes;
-            document.getElementById('totalMatchesMain').textContent = totalMatches;
-            document.getElementById('totalMatches').textContent = totalMatches;
-            document.getElementById('totalLikes').textContent = totalLikes;
-            document.getElementById('totalSuperLikes').textContent = totalSuperLikes;
-        }
-        
-        function showMatchesScreen() {
-            showScreen('matchesScreen');
-            renderMatches();
-        }
-        
-        function renderMatches() {
-            const matchesGrid = document.getElementById('dashboardMatchesGrid');
-            const userMatches = matches.filter(match => 
-                match.user1.id === currentUser.id || match.user2.id === currentUser.id
-            );
-            
-            if (userMatches.length === 0) {
-                matchesGrid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">💫</div>
-                        <div class="empty-title">No matches yet!</div>
-                        <div class="empty-subtitle">Start swiping to find your connections</div>
-                    </div>
-                `;
-                return;
-            }
-            
-            matchesGrid.innerHTML = userMatches.map(match => {
-                const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
-                const isSuper = match.type === 'super_match';
-                return `
-                    <div class="match-card">
-                        <div class="match-avatar">${getInitials(otherUser.fullName || otherUser.name)}</div>
-                        <div class="match-info">
-                            <div class="match-name">${otherUser.fullName || otherUser.name}</div>
-                            <div class="match-business">${otherUser.jobTitle || 'Professional'} at ${otherUser.business || 'Company'}</div>
-                        </div>
-                        <div class="match-badge">${isSuper ? '⭐' : '🔥'}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function showDiscoverScreen() {
-            showScreen('discoverScreen');
-            loadDashboardProfiles();
-        }
-        
-        function loadDashboardProfiles() {
-            const cardStack = document.getElementById('dashboardCardStack');
-            const otherUsers = checkedInUsers.filter(user => user.id !== currentUser?.id);
-            
-            profileCards = otherUsers;
-            document.getElementById('dashboardTotalCards').textContent = profileCards.length;
-            
-            if (profileCards.length === 0) {
-                cardStack.innerHTML = `
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🤖</div>
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">AI-Powered Matching</div>
-                        <div style="font-size: 14px; margin-bottom: 24px; color: var(--text-secondary);">Check in to tonight's event to start smart networking!</div>
-                        <button class="btn" onclick="joinEvent()">CHECK IN TO EVENT</button>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Load first card
-            if (profileCards.length > 0) {
-                cardStack.innerHTML = createProfileCard(profileCards[0]);
-                addDashboardSwipeEvents();
-            }
-            
-            currentCardIndex = 0;
-            updateDashboardCounter();
-        }
-        
-        function createProfileCard(profile) {
-            return `
-                <div class="profile-card" data-user-id="${profile.id}">
-                    <div class="profile-avatar">${getInitials(profile.fullName || profile.name)}</div>
-                    <div class="profile-name">${profile.fullName || profile.name}</div>
-                    <div class="profile-business">${profile.jobTitle || 'Professional'} at ${profile.business || 'Company'}</div>
-                    <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;">
-                        ${profile.roleFocus ? `<span style="background: var(--glass-bg); padding: 4px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">${profile.roleFocus}</span>` : ''}
-                        ${profile.companySize ? `<span style="background: var(--glass-bg); padding: 4px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">${profile.companySize} employees</span>` : ''}
-                    </div>
-                    <div class="profile-details">
-                        ${profile.industry ? `<div style="margin-bottom: 8px;"><strong>Industry:</strong> ${profile.industry}</div>` : ''}
-                        ${profile.eventGoal ? `<div style="margin-bottom: 8px;"><strong>Looking to:</strong> ${profile.eventGoal}</div>` : ''}
-                        ${profile.purchaseRole ? `<div style="margin-bottom: 8px;"><strong>Decision Role:</strong> ${profile.purchaseRole}</div>` : ''}
-                        ${profile.bio ? `<div style="margin-top: 12px; font-style: italic;">"${profile.bio}"</div>` : '<div style="margin-top: 12px;">Looking to connect with fellow entrepreneurs</div>'}
-                    </div>
-                </div>
-            `;
-        }
-        
-        function getInitials(name) {
-            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
-        }
-        
-        function updateDashboardCounter() {
-            document.getElementById('dashboardCurrentCard').textContent = Math.min(currentCardIndex + 1, profileCards.length);
-        }
-        
-        function addDashboardSwipeEvents() {
-            const topCard = document.querySelector('#dashboardCardStack .profile-card');
-            if (!topCard) return;
-            
-            let isDragging = false;
-            let startX = 0;
-            let currentX = 0;
-            
-            // Mouse events
-            topCard.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', endDrag);
-            
-            // Touch events
-            topCard.addEventListener('touchstart', startDrag, { passive: false });
-            document.addEventListener('touchmove', drag, { passive: false });
-            document.addEventListener('touchend', endDrag);
-            
-            function startDrag(e) {
-                isDragging = true;
-                startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-                topCard.classList.add('dragging');
-                e.preventDefault();
-            }
-            
-            function drag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                currentX = (e.type === 'mousemove' ? e.clientX : e.touches[0].clientX) - startX;
-                const rotation = currentX * 0.1;
-                
-                topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
-                
-                // Visual feedback
-                if (currentX > 50) {
-                    topCard.style.borderTopColor = 'var(--success-color)';
-                } else if (currentX < -50) {
-                    topCard.style.borderTopColor = 'var(--error-color)';
-                } else {
-                    topCard.style.borderTopColor = '';
-                }
-            }
-            
-            function endDrag() {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                topCard.classList.remove('dragging');
-                topCard.style.borderTopColor = '';
-                
-                if (Math.abs(currentX) > 100) {
-                    if (currentX > 0) {
-                        swipeRight();
-                    } else {
-                        swipeLeft();
-                    }
-                } else {
-                    topCard.style.transform = '';
-                }
-                
-                currentX = 0;
-            }
-        }
-        
-        function nextDashboardCard() {
-            currentCardIndex++;
-            updateDashboardCounter();
-            
-            const cardStack = document.getElementById('dashboardCardStack');
-            
-            if (currentCardIndex >= profileCards.length) {
-                cardStack.innerHTML = `
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
-                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">All done!</div>
-                        <div style="font-size: 14px; color: var(--text-secondary);">Check your matches for connections</div>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Load next card
-            cardStack.innerHTML = createProfileCard(profileCards[currentCardIndex]);
-            setTimeout(addDashboardSwipeEvents, 50);
-        }
-        
-        function swipeLeft() {
-            const isDashboard = document.getElementById('discoverScreen').classList.contains('active');
-            const topCard = document.querySelector(isDashboard ? '#dashboardCardStack .profile-card' : '.profile-card');
-            
-            if (!topCard) return;
-            
-            const userId = topCard.dataset.userId;
-            recordSwipe(userId, false);
-            
-            topCard.classList.add('swiped-left');
-            
-            if (isDashboard) {
-                setTimeout(nextDashboardCard, 300);
-            } else {
-                setTimeout(nextCard, 300);
-            }
-        }
-        
-        function swipeRight() {
-            const isDashboard = document.getElementById('discoverScreen').classList.contains('active');
-            const topCard = document.querySelector(isDashboard ? '#dashboardCardStack .profile-card' : '.profile-card');
-            
-            if (!topCard) return;
-            
-            const userId = topCard.dataset.userId;
-            recordSwipe(userId, true);
-            
-            topCard.classList.add('swiped-right');
-            
-            if (isDashboard) {
-                setTimeout(nextDashboardCard, 300);
-            } else {
-                setTimeout(nextCard, 300);
-            }
-        }
-        
-        function superLike() {
-            const isDashboard = document.getElementById('discoverScreen').classList.contains('active');
-            const topCard = document.querySelector(isDashboard ? '#dashboardCardStack .profile-card' : '.profile-card');
-            
-            if (!topCard) return;
-            
-            const userId = topCard.dataset.userId;
-            recordSwipe(userId, 'super_like');
-            
-            // Add special animation for super like
-            topCard.style.transform = 'scale(1.1) translateY(-20px)';
-            topCard.style.opacity = '0';
-            topCard.style.filter = 'brightness(1.5)';
-            
-            showNotification('⭐ Super Like sent!');
-            
-            if (isDashboard) {
-                setTimeout(nextDashboardCard, 300);
-            } else {
-                setTimeout(nextCard, 300);
-            }
-        }
-        
-        function recordSwipe(userId, swipeType) {
-            if (!currentUser) return;
-            
-            if (!swipes[currentUser.id]) {
-                swipes[currentUser.id] = {};
-            }
-            swipes[currentUser.id][userId] = swipeType;
-            
-            // Check for match
-            const isLike = swipeType === true || swipeType === 'super_like';
-            if (isLike && swipes[userId] && (swipes[userId][currentUser.id] === true || swipes[userId][currentUser.id] === 'super_like')) {
-                // It's a match!
-                const matchedUser = checkedInUsers.find(u => u.id === userId);
-                const match = {
-                    user1: currentUser,
-                    user2: matchedUser,
-                    timestamp: new Date().toISOString(),
-                    type: swipeType === 'super_like' ? 'super_match' : 'regular_match'
-                };
-                
-                matches.push(match);
-                showMatch(match);
-                updateDashboardStats();
-                
-                // Save to Firebase
-                if (isFirebaseAvailable) {
-                    database.ref('matches/' + currentUser.id + '_' + userId).set(match);
-                }
-            }
-            
-            // Save swipe to Firebase
-            if (isFirebaseAvailable) {
-                database.ref('swipes/' + currentUser.id + '/' + userId).set(swipeType);
-            }
+            // Update events attended (mock for now)
+            document.getElementById('eventsAttendedCount').textContent = currentUser ? '1' : '0';
             
             // Update stats
             updateDashboardStats();
         }
         
-        function showMatch(match) {
-            const otherUser = match.user2;
-            const matchType = match.type === 'super_match' ? '⭐ SUPER MATCH ⭐' : '🔥 IT\'S A MATCH! 🔥';
+        function updateDashboardStats() {
+            // Update connections count (people from events)
+            const connections = getAllEventAttendees().filter(person => person.id !== currentUser?.id).length;
+            document.getElementById('connectionsCount').textContent = connections;
             
-            setTimeout(() => {
-                showNotification(`${matchType} You and ${otherUser.fullName || otherUser.name} both want to connect!`);
-            }, 500);
+            // Update views count (mock for now)
+            document.getElementById('viewsCount').textContent = Math.floor(Math.random() * 50) + 10;
+            
+            // Update networking score based on profile completion
+            let score = 50;
+            if (currentUser) {
+                if (currentUser.fullName) score += 10;
+                if (currentUser.business) score += 10;
+                if (currentUser.jobTitle) score += 10;
+                if (currentUser.industry) score += 10;
+                if (currentUser.bio) score += 10;
+            }
+            document.getElementById('networkingScore').textContent = score;
+        }
+        
+        // Directory Functions
+        function showDirectoryScreen() {
+            showScreen('directoryScreen');
+            loadDirectory();
+        }
+        
+        function showCategoriesScreen() {
+            showScreen('categoriesScreen');
+            loadCategories();
+        }
+        
+        function getAllEventAttendees() {
+            // Combine all checked-in users and remove duplicates
+            const attendeesMap = new Map();
+            
+            checkedInUsers.forEach(user => {
+                if (!attendeesMap.has(user.id)) {
+                    attendeesMap.set(user.id, user);
+                }
+            });
+            
+            return Array.from(attendeesMap.values());
+        }
+        
+        function getUniqueCategories() {
+            const categories = new Map();
+            const categoryIcons = {
+                'Technology': '💻',
+                'Finance': '💰',
+                'Payments': '💳',
+                'Real Estate': '🏢',
+                'Legal': '⚖️',
+                'Healthcare': '🏥',
+                'Consulting': '📊',
+                'Marketing': '📱',
+                'Hospitality': '🏨',
+                'Retail': '🛍️',
+                'Other': '🌐'
+            };
+            
+            getAllEventAttendees().forEach(person => {
+                const industry = person.industry || 'Other';
+                if (!categories.has(industry)) {
+                    categories.set(industry, {
+                        name: industry,
+                        icon: categoryIcons[industry] || '📁',
+                        count: 0
+                    });
+                }
+                categories.get(industry).count++;
+            });
+            
+            return Array.from(categories.values());
+        }
+        
+        function loadDirectory(filterCategory = '') {
+            const directoryGrid = document.getElementById('directoryGrid');
+            let attendees = getAllEventAttendees();
+            
+            // Filter out current user
+            attendees = attendees.filter(person => person.id !== currentUser?.id);
+            
+            // Apply category filter if specified
+            if (filterCategory) {
+                attendees = attendees.filter(person => person.industry === filterCategory);
+            }
+            
+            // Apply search filter if active
+            const searchTerm = document.getElementById('directorySearch').value.toLowerCase();
+            if (searchTerm) {
+                attendees = attendees.filter(person => 
+                    person.fullName?.toLowerCase().includes(searchTerm) ||
+                    person.business?.toLowerCase().includes(searchTerm) ||
+                    person.jobTitle?.toLowerCase().includes(searchTerm) ||
+                    person.industry?.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (attendees.length === 0) {
+                directoryGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📚</div>
+                        <div class="empty-title">No contacts found</div>
+                        <div class="empty-subtitle">${filterCategory ? 'Try a different category' : 'Directory will grow as more people attend events'}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            directoryGrid.innerHTML = attendees.map(person => `
+                <div class="directory-card" onclick="showContactDetail('${person.id}')">
+                    <div class="directory-avatar">${getInitials(person.fullName || person.name)}</div>
+                    <div class="directory-info">
+                        <div class="directory-name">${person.fullName || person.name}</div>
+                        <div class="directory-title">${person.jobTitle || 'Professional'}</div>
+                        <div class="directory-company">${person.business || 'Company'}</div>
+                    </div>
+                    <div class="directory-badge">${person.industry || 'Other'}</div>
+                </div>
+            `).join('');
+        }
+        
+        function loadCategories() {
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            const categories = getUniqueCategories();
+            
+            if (categories.length === 0) {
+                categoriesGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🏷️</div>
+                        <div class="empty-title">No categories yet</div>
+                        <div class="empty-subtitle">Categories will appear as people join events</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort categories by count
+            categories.sort((a, b) => b.count - a.count);
+            
+            categoriesGrid.innerHTML = categories.map(category => `
+                <div class="category-card" onclick="showDirectoryWithCategory('${category.name}')">
+                    <div class="category-info">
+                        <div class="category-icon">${category.icon}</div>
+                        <div class="category-details">
+                            <div class="category-name">${category.name}</div>
+                            <div class="category-count">${category.count} ${category.count === 1 ? 'person' : 'people'}</div>
+                        </div>
+                    </div>
+                    <div class="category-arrow">→</div>
+                </div>
+            `).join('');
+        }
+        
+        function showDirectoryWithCategory(category) {
+            showScreen('directoryScreen');
+            document.getElementById('categoryFilter').value = category;
+            loadDirectory(category);
+        }
+        
+        function searchDirectory() {
+            const category = document.getElementById('categoryFilter').value;
+            loadDirectory(category);
+        }
+        
+        function filterByCategory() {
+            const category = document.getElementById('categoryFilter').value;
+            loadDirectory(category);
+        }
+        
+        let previousScreen = 'directoryScreen';
+        
+        function showContactDetail(userId) {
+            previousScreen = document.querySelector('.screen.active').id;
+            showScreen('contactDetailScreen');
+            
+            const person = getAllEventAttendees().find(p => p.id === userId);
+            if (!person) return;
+            
+            const detailContent = document.getElementById('contactDetailContent');
+            detailContent.innerHTML = `
+                <div class="contact-detail-card">
+                    <div class="contact-header">
+                        <div class="contact-avatar-large">${getInitials(person.fullName || person.name)}</div>
+                        <div class="contact-basic-info">
+                            <h2 style="font-size: 24px; margin-bottom: 8px;">${person.fullName || person.name}</h2>
+                            <div style="font-size: 16px; color: var(--accent-color); margin-bottom: 4px;">${person.jobTitle || 'Professional'}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">${person.business || 'Company'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-actions">
+                        <button class="contact-action-btn" onclick="saveContact('${person.id}')">
+                            <span>💾</span> Save Contact
+                        </button>
+                        <button class="contact-action-btn" onclick="connectWithPerson('${person.id}')">
+                            <span>🔗</span> Connect
+                        </button>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-section-title">Professional Information</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Industry</div>
+                                <div class="info-value">${person.industry || 'Not specified'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Company Size</div>
+                                <div class="info-value">${person.companySize || 'Not specified'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Company Age</div>
+                                <div class="info-value">${person.companyAge || 'Not specified'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Role Focus</div>
+                                <div class="info-value">${person.roleFocus || 'Not specified'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <div class="info-section-title">Networking Goals</div>
+                        <div class="info-grid">
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <div class="info-label">Looking to</div>
+                                <div class="info-value">${person.eventGoal || 'Network with professionals'}</div>
+                            </div>
+                            <div class="info-item" style="grid-column: 1 / -1;">
+                                <div class="info-label">Decision Role</div>
+                                <div class="info-value">${person.purchaseRole || 'Not specified'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${person.bio ? `
+                    <div class="info-section">
+                        <div class="info-section-title">About</div>
+                        <div style="background: var(--glass-bg); padding: 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <p style="font-size: 14px; line-height: 1.6; margin: 0;">${person.bio}</p>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="info-section">
+                        <div class="info-section-title">Event History</div>
+                        <div style="background: var(--glass-bg); padding: 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <div style="font-size: 14px;">
+                                <span style="color: var(--accent-color);">✓</span> Expat Entrepreneurs Meetup - June 2, 2025
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function goBackFromDetail() {
+            showScreen(previousScreen);
+            if (previousScreen === 'directoryScreen') {
+                loadDirectory(document.getElementById('categoryFilter').value);
+            }
+        }
+        
+        function saveContact(userId) {
+            showNotification('Contact saved! Feature coming soon.');
+        }
+        
+        function connectWithPerson(userId) {
+            showNotification('Connection request sent! Feature coming soon.');
+        }
+        
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
         }
         
         // Profile Functions
@@ -2572,18 +2619,15 @@
                 if (document.getElementById('dashboardScreen').classList.contains('active')) {
                     loadDashboardData();
                 }
-            });
-            
-            database.ref('swipes').on('value', (snapshot) => {
-                const data = snapshot.val();
-                swipes = data || {};
-            });
-            
-            database.ref('matches').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    matches = Object.values(data);
-                    updateDashboardStats();
+                
+                // Update directory if active
+                if (document.getElementById('directoryScreen').classList.contains('active')) {
+                    loadDirectory(document.getElementById('categoryFilter').value);
+                }
+                
+                // Update categories if active
+                if (document.getElementById('categoriesScreen').classList.contains('active')) {
+                    loadCategories();
                 }
             });
         }
@@ -2591,15 +2635,6 @@
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             console.log('ProLink AI initialized');
-            
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (document.getElementById('discoverScreen').classList.contains('active')) {
-                    if (e.key === 'ArrowLeft') swipeLeft();
-                    if (e.key === 'ArrowRight') swipeRight();
-                    if (e.key === 'ArrowUp') superLike();
-                }
-            });
             
             // Add form validation on input for all inputs
             document.addEventListener('input', function(e) {
