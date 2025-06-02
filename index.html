@@ -709,6 +709,11 @@
             to { transform: rotate(360deg); }
         }
         
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
         /* Additional Styles */
         .attendee-item {
             padding: 16px;
@@ -1155,8 +1160,17 @@
             </div>
         </div>
         
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="screen active">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+                <div style="font-size: 48px; margin-bottom: 24px; animation: pulse 1.5s ease-in-out infinite;">🤖</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Loading ProLink AI</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">Checking authentication...</div>
+            </div>
+        </div>
+        
         <!-- Welcome Screen -->
-        <div id="welcomeScreen" class="screen active">
+        <div id="welcomeScreen" class="screen">
             <div style="text-align: center; margin-bottom: 32px;">
                 <div style="font-size: 64px; margin-bottom: 24px;">🤖</div>
                 <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 16px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome to ProLink AI</h2>
@@ -1301,38 +1315,59 @@
         let database;
         let auth;
         let isFirebaseAvailable = false;
+        let authStateChecked = false;
         
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
             auth = firebase.auth();
+            
+            // Enable persistence (it's usually on by default, but let's be explicit)
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    console.log('Auth persistence enabled');
+                })
+                .catch((error) => {
+                    console.error('Error enabling persistence:', error);
+                });
+            
             isFirebaseAvailable = true;
             console.log('Firebase initialized successfully');
             
             // Listen for authentication state changes
             auth.onAuthStateChanged((user) => {
+                authStateChecked = true;
                 if (user) {
                     console.log('User is signed in:', user.email);
                     // Load user profile data
                     loadUserProfile(user).then(() => {
-                        // Only auto-navigate to dashboard if we're on the welcome screen
-                        const currentScreen = document.querySelector('.screen.active');
-                        if (currentScreen && currentScreen.id === 'welcomeScreen') {
-                            setTimeout(() => {
-                                showScreen('dashboardScreen');
-                                loadDashboardData();
-                            }, 500);
-                        }
+                        // Always navigate to dashboard if user is logged in
+                        showScreen('dashboardScreen');
+                        loadDashboardData();
+                    }).catch((error) => {
+                        console.error('Error loading profile:', error);
+                        showScreen('dashboardScreen');
+                        loadDashboardData();
                     });
                 } else {
                     console.log('User is signed out');
                     currentUser = null;
+                    showScreen('welcomeScreen');
                 }
             });
+            
+            // Fallback in case auth state takes too long
+            setTimeout(() => {
+                if (!authStateChecked) {
+                    console.log('Auth check timeout, showing welcome screen');
+                    showScreen('welcomeScreen');
+                }
+            }, 3000);
             
         } catch (error) {
             console.log('Firebase not available, using local storage fallback');
             isFirebaseAvailable = false;
+            showScreen('welcomeScreen');
         }
         
         // App State
