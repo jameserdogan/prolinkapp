@@ -404,8 +404,13 @@
             <button class="btn" onclick="showCreateAccount()">CREATE ACCOUNT</button>
             <button class="btn btn-secondary" onclick="showLogin()">LOGIN</button>
             
-            <!-- Temporary dashboard access for testing -->
-            <button class="btn" onclick="showScreen('dashboardScreen'); loadDashboardData();" style="background: #ffa502; font-size: 12px; margin-top: 16px;">🔧 TEST DASHBOARD</button>
+            <!-- Debug buttons -->
+            <div style="margin-top: 20px; padding: 16px; background: rgba(255,165,0,0.1); border-radius: 8px;">
+                <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">🔧 DEBUG MODE</div>
+                <button onclick="console.log('Button clicked!'); alert('Debug button works!'); try { debugDashboard(); } catch(e) { alert('Error: ' + e.message); }" style="width: 100%; padding: 8px; background: #ff6b35; color: white; border: none; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">FORCE SHOW DASHBOARD</button>
+                <button onclick="console.log('Check screens clicked'); alert('Checking screens...'); document.querySelectorAll('.screen').forEach((s,i) => console.log(i + ': ' + s.id + (s.classList.contains('active') ? ' (ACTIVE)' : '')));" style="width: 100%; padding: 8px; background: #4ecdc4; color: white; border: none; border-radius: 4px; font-size: 12px; margin-bottom: 4px;">CHECK ALL SCREENS</button>
+                <button onclick="console.log('Manual dashboard test'); const dash = document.getElementById('dashboardScreen'); console.log('Dashboard element:', dash); if(dash) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); dash.classList.add('active'); alert('Dashboard should be visible now!'); } else { alert('Dashboard element not found!'); }" style="width: 100%; padding: 8px; background: #9b59b6; color: white; border: none; border-radius: 4px; font-size: 12px;">MANUAL DASHBOARD TEST</button>
+            </div>
             
             <div style="text-align: center; margin-top: 20px; color: #999999; font-size: 12px;">
                 Join tonight's networking event
@@ -824,6 +829,74 @@
                 screen.classList.remove('active');
             });
             targetScreen.classList.add('active');
+        }
+        
+        // Debug Functions
+        function debugDashboard() {
+            console.log('=== DASHBOARD DEBUG ===');
+            
+            // Check if dashboard exists
+            const dashboard = document.getElementById('dashboardScreen');
+            console.log('Dashboard element:', dashboard);
+            
+            if (!dashboard) {
+                console.error('❌ Dashboard element not found!');
+                alert('❌ Dashboard HTML missing! This is the problem.');
+                return;
+            }
+            
+            // Force show dashboard
+            console.log('✅ Dashboard element found, forcing display...');
+            
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.style.display = 'none';
+                screen.classList.remove('active');
+            });
+            
+            // Show dashboard
+            dashboard.style.display = 'block';
+            dashboard.classList.add('active');
+            
+            // Try to load dashboard data
+            try {
+                // Set dummy user if none exists
+                if (!currentUser) {
+                    currentUser = {
+                        id: 'debug_user',
+                        fullName: 'Debug User',
+                        email: 'debug@test.com',
+                        business: 'Test Business'
+                    };
+                }
+                
+                loadDashboardData();
+                console.log('✅ Dashboard loaded successfully!');
+                alert('✅ Dashboard should now be visible!');
+                
+            } catch (error) {
+                console.error('❌ Error loading dashboard:', error);
+                alert('❌ Error loading dashboard: ' + error.message);
+            }
+        }
+        
+        function debugScreens() {
+            console.log('=== SCREENS DEBUG ===');
+            
+            const screens = ['welcomeScreen', 'createAccountScreen', 'loginScreen', 'successScreen', 'checkinScreen', 'networkingScreen', 'dashboardScreen'];
+            
+            screens.forEach(screenId => {
+                const screen = document.getElementById(screenId);
+                console.log(`${screenId}: ${screen ? '✅ EXISTS' : '❌ MISSING'}`);
+            });
+            
+            const activeScreens = document.querySelectorAll('.screen.active');
+            console.log('Currently active screens:', activeScreens.length);
+            activeScreens.forEach(screen => {
+                console.log('Active:', screen.id);
+            });
+            
+            alert('Check console for screen debug info');
         }
         
         function showCreateAccount() {
