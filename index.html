@@ -391,7 +391,191 @@
         <div class="header">
             <div class="logo">ProLink</div>
             <div class="subtitle">Dubai's Premium Networking Platform</div>
+            <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="screen">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="dashboard-user-info">
+                    <div class="dashboard-user-avatar" id="dashboardUserAvatar">JD</div>
+                    <div>
+                        <div class="dashboard-user-name" id="dashboardUserName">John Doe</div>
+                        <div style="font-size: 12px; color: #666666;" id="dashboardUserBusiness">Entrepreneur</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-link" onclick="signOut()" style="color: #666; font-size: 12px;">Sign Out</button>
+            </div>
+            
+            <!-- Event Info -->
+            <div class="dashboard-event-info">
+                <div class="event-title">Expat Entrepreneurs Meetup DXB</div>
+                <div class="event-meta">
+                    📅 Tonight • 7:00 PM - 9:00 PM<br>
+                    📍 Lock, Stock & Barrel JBR • <span id="dashboardCheckedInCount">0</span> checked in
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div id="dashboardMainContent">
+                
+                <!-- Discover Tab (Main Swiping) -->
+                <div id="discoverContent" class="dashboard-tab-content active">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="background: rgba(109, 212, 236, 0.1); padding: 8px 12px; border-radius: 12px; font-size: 12px; color: #666666; display: inline-block;">
+                            <span id="dashboardCurrentCard">1</span> of <span id="dashboardTotalCards">0</span> people
+                        </div>
+                    </div>
+                    
+                    <!-- Main Card Stack -->
+                    <div class="dashboard-main-card" id="dashboardCardStack">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #666666;">
+                            <div style="font-size: 32px; margin-bottom: 16px;">👋</div>
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Ready to Network?</div>
+                            <div style="font-size: 12px;">Check in to tonight's event to start meeting people!</div>
+                            <button class="btn" onclick="joinEvent()" style="margin-top: 16px; font-size: 14px; padding: 12px 24px;">CHECK IN TO EVENT</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Swipe Actions -->
+                    <div class="swipe-actions">
+                        <button class="swipe-btn reject" onclick="swipeLeft()" title="Pass">✕</button>
+                        <button class="swipe-btn super-like" onclick="superLike()" title="Super Like">★</button>
+                        <button class="swipe-btn like" onclick="swipeRight()" title="Like">❤</button>
+                    </div>
+                </div>
+                
+                <!-- Matches Tab -->
+                <div id="matchesContent" class="dashboard-tab-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 32px; margin-bottom: 8px;">🔥</div>
+                        <h4 style="font-size: 16px; margin-bottom: 4px;">Your Matches</h4>
+                        <p style="color: #666666; font-size: 12px;">People you've connected with</p>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalMatches">0</div>
+                            <div class="stat-label">MATCHES</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalLikes">0</div>
+                            <div class="stat-label">LIKES</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalSuperLikes">0</div>
+                            <div class="stat-label">SUPER LIKES</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Matches Grid -->
+                    <div id="dashboardMatchesGrid" class="matches-grid">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #666666;">
+                            <div style="font-size: 32px; margin-bottom: 16px;">💫</div>
+                            <div style="font-size: 14px;">No matches yet!</div>
+                            <div style="font-size: 10px; margin-top: 4px;">Start swiping to find your connections</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Tab -->
+                <div id="profileContent" class="dashboard-tab-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 32px; margin-bottom: 8px;">👤</div>
+                        <h4 style="font-size: 16px; margin-bottom: 4px;">Your Profile</h4>
+                        <p style="color: #666666; font-size: 12px;">How others see you</p>
+                    </div>
+                    
+                    <!-- Profile Preview -->
+                    <div class="profile-quick-edit">
+                        <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                            <div class="dashboard-user-avatar" style="margin-right: 12px;" id="profilePreviewAvatar">JD</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 2px;" id="profilePreviewName">Loading...</div>
+                                <div style="font-size: 12px; color: #666666;" id="profilePreviewBusiness">Entrepreneur</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: #666666; line-height: 1.4;" id="profilePreviewBio">Add a bio to tell others about yourself...</div>
+                    </div>
+                    
+                    <!-- Edit Profile Form -->
+                    <div id="profileEditForm">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileName" placeholder="Your full name">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Business/Company</label>
+                            <input type="text" id="profileBusiness" placeholder="Your company or role">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Industry</label>
+                            <input type="text" id="profileIndustry" placeholder="Your industry">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Bio</label>
+                            <textarea id="profileBio" placeholder="Tell others about yourself..." style="width: 100%; min-height: 60px; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <button class="btn" onclick="saveProfile()">SAVE PROFILE</button>
+                    </div>
+                </div>
+                
+                <!-- More Tab -->
+                <div id="moreContent" class="dashboard-tab-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-size: 32px; margin-bottom: 8px;">⚙️</div>
+                        <h4 style="font-size: 16px; margin-bottom: 4px;">Settings & More</h4>
+                        <p style="color: #666666; font-size: 12px;">Manage your ProLink experience</p>
+                    </div>
+                    
+                    <!-- My Events -->
+                    <div style="background: rgba(255, 255, 255, 0.8); border: 2px solid #e0e0e0; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                        <h5 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">📅 My Events</h5>
+                        <div id="myEventsList">
+                            <div style="text-align: center; padding: 20px; color: #666666;">
+                                <div style="font-size: 24px; margin-bottom: 8px;">🎫</div>
+                                <div style="font-size: 12px;">No events yet</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings -->
+                    <div style="background: rgba(255, 255, 255, 0.8); border: 2px solid #e0e0e0; border-radius: 12px; padding: 16px;">
+                        <h5 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">⚙️ Settings</h5>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button class="btn btn-secondary" onclick="showFeedbackModal()" style="font-size: 12px; padding: 8px 12px;">📝 Send Feedback</button>
+                            <button class="btn btn-secondary" onclick="showAboutModal()" style="font-size: 12px; padding: 8px 12px;">ℹ️ About ProLink</button>
+                            <button class="btn btn-secondary" onclick="signOut()" style="font-size: 12px; padding: 8px 12px; color: #ff4757; border-color: #ff4757;">🚪 Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-tab active" data-tab="discover" onclick="showDashboardTab('discover')">
+                    <div class="nav-icon">🔍</div>
+                    <div class="nav-text">DISCOVER</div>
+                </button>
+                <button class="nav-tab" data-tab="matches" onclick="showDashboardTab('matches')">
+                    <div class="nav-icon">🔥</div>
+                    <div class="nav-text">MATCHES</div>
+                </button>
+                <button class="nav-tab" data-tab="profile" onclick="showDashboardTab('profile')">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-text">PROFILE</div>
+                </button>
+                <button class="nav-tab" data-tab="more" onclick="showDashboardTab('more')">
+                    <div class="nav-icon">⚙️</div>
+                    <div class="nav-text">MORE</div>
+                </button>
+            </div>
         </div>
+    </div>
         
         <!-- Welcome Screen -->
         <div id="welcomeScreen" class="screen active">
