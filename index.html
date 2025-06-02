@@ -447,12 +447,49 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            position: relative;
         }
         
         .directory-card:hover {
             background: rgba(102, 126, 234, 0.1);
             border-color: var(--accent-color);
             transform: translateX(4px);
+        }
+        
+        .connect-btn {
+            position: absolute;
+            right: 16px;
+            padding: 8px 16px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        
+        .connect-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .connect-btn.pending {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: default;
+        }
+        
+        .connect-btn.connected {
+            background: var(--success-color);
+            cursor: default;
+        }
+        
+        .connect-btn:active {
+            transform: scale(0.95);
         }
         
         .directory-avatar {
@@ -472,6 +509,7 @@
         .directory-info {
             flex: 1;
             min-width: 0;
+            padding-right: 100px; /* Space for connect button */
         }
         
         .directory-name {
@@ -505,22 +543,28 @@
         
         .categories-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
         }
         
         .category-card {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            text-align: center;
+            min-height: 120px;
         }
         
         .category-card::before {
@@ -531,7 +575,7 @@
             right: -2px;
             bottom: -2px;
             background: var(--primary-gradient);
-            border-radius: 20px;
+            border-radius: 16px;
             opacity: 0;
             z-index: -1;
             transition: opacity 0.3s ease;
@@ -547,35 +591,41 @@
             box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
         }
         
-        .category-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
         .category-icon {
-            font-size: 36px;
+            font-size: 32px;
+            margin-bottom: 8px;
             filter: drop-shadow(0 0 10px currentColor);
         }
         
-        .category-details {
-            text-align: left;
-        }
-        
         .category-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             margin-bottom: 4px;
+            line-height: 1.2;
         }
         
         .category-count {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
         
-        .category-arrow {
-            font-size: 20px;
-            color: var(--text-secondary);
+        /* Scrollbar styling for categories */
+        .categories-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .categories-grid::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .categories-grid::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .categories-grid::-webkit-scrollbar-thumb:hover {
+            background: #7c8ff5;
         }
         
         /* Contact Detail Styles */
@@ -941,12 +991,17 @@
                         <div class="dashboard-greeting">Hi <span id="dashboardUserName">Entrepreneur</span></div>
                         <div class="dashboard-subtitle">Browse your professional network</div>
                     </div>
-                    <div class="dashboard-actions">
-                        <button class="dashboard-icon-btn" onclick="showNotification('AI insights coming soon!')">🤖</button>
-                        <button class="dashboard-icon-btn" onclick="showNotification('Notifications coming soon!')">🔔</button>
-                        <button class="dashboard-icon-btn" onclick="signOut()">⚙️</button>
-                    </div>
                 </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 16px;">
+                <button class="dashboard-icon-btn" onclick="showIncomingRequests()" style="position: relative;">
+                    🔔
+                    <span id="requestBadge" style="position: absolute; top: -4px; right: -4px; background: var(--error-color); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; display: none;">0</span>
+                </button>
+                <button class="dashboard-icon-btn" onclick="showNotification('🤖 Intelligent matching coming soon!')">🤖</button>
+                <button class="dashboard-icon-btn" onclick="showNotification('📊 Analytics coming soon!')">📊</button>
+                <button class="dashboard-icon-btn" onclick="signOut()">⚙️</button>
             </div>
             
             <!-- Tonight's Event Card -->
@@ -1030,7 +1085,7 @@
                     <option value="Technology">Technology</option>
                     <option value="Finance">Finance & Banking</option>
                     <option value="Real Estate">Real Estate</option>
-                                            <option value="Legal">Legal / Law</option>
+                    <option value="Legal">Legal / Law</option>
                     <option value="Healthcare">Healthcare</option>
                     <option value="Consulting">Consulting</option>
                     <option value="Marketing">Marketing & PR</option>
@@ -1085,7 +1140,7 @@
             <!-- Profile Preview -->
             <div class="profile-preview-card">
                 <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                    <div class="match-avatar" id="profilePreviewAvatar" style="margin-right: 16px;">TU</div>
+                    <div class="directory-avatar" id="profilePreviewAvatar" style="margin-right: 16px;">TU</div>
                     <div style="flex: 1;">
                         <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;" id="profilePreviewName">Test User</div>
                         <div style="font-size: 14px; color: var(--text-secondary);" id="profilePreviewJobTitle">Job Title</div>
@@ -1125,19 +1180,43 @@
                 </div>
                 
                 <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="profilePhone" placeholder="Your phone number">
+                </div>
+                
+                <div class="input-group">
                     <label>Industry</label>
                     <select id="profileIndustry">
                         <option value="">Select your industry</option>
                         <option value="Technology">Technology</option>
                         <option value="Finance">Finance & Banking</option>
-                        <option value="Payments">Payments</option>
                         <option value="Real Estate">Real Estate</option>
                         <option value="Legal">Legal / Law</option>
                         <option value="Healthcare">Healthcare</option>
-                        <option value="Retail">Retail</option>
-                        <option value="Hospitality">Hospitality</option>
                         <option value="Consulting">Consulting</option>
                         <option value="Marketing">Marketing & PR</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Hospitality">Hospitality</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Construction">Construction</option>
+                        <option value="Education">Education</option>
+                        <option value="Media">Media & Advertising</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Logistics">Logistics & Supply Chain</option>
+                        <option value="Energy">Energy & Utilities</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Automotive">Automotive</option>
+                        <option value="Aviation">Aviation</option>
+                        <option value="Telecom">Telecommunications</option>
+                        <option value="Pharma">Pharmaceuticals</option>
+                        <option value="Food & Beverage">Food & Beverage</option>
+                        <option value="Fashion">Fashion & Apparel</option>
+                        <option value="Sports">Sports & Fitness</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Travel">Travel & Tourism</option>
+                        <option value="Non-Profit">Non-Profit</option>
+                        <option value="Government">Government</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -1465,6 +1544,8 @@
         let checkedInUsers = [];
         let preRegisteredAttendees = [];
         let selectedAttendeeId = null;
+        let connections = {}; // Store connection requests and status
+        let connectionRequests = []; // Store incoming connection requests
         
         // Pre-registered attendees from tonight's event
         const tonightAttendees = [
@@ -1637,6 +1718,7 @@
                     fullName: profile?.fullName || firebaseUser.displayName || '',
                     business: profile?.business || 'Company',
                     jobTitle: profile?.jobTitle || 'Professional',
+                    phone: profile?.phone || '',
                     industry: profile?.industry || '',
                     companyAge: profile?.companyAge || '',
                     companySize: profile?.companySize || '',
@@ -1662,11 +1744,19 @@
                     fullName: profileData.fullName,
                     business: profileData.business,
                     jobTitle: profileData.jobTitle || 'Professional',
+                    phone: profileData.phone || '',
+                    industry: profileData.industry || '',
+                    companyAge: profileData.companyAge || '',
+                    companySize: profileData.companySize || '',
+                    eventGoal: profileData.eventGoal || '',
+                    roleFocus: profileData.roleFocus || '',
+                    purchaseRole: profileData.purchaseRole || '',
+                    bio: profileData.bio || '',
                     timestamp: profileData.timestamp,
                     lastUpdated: new Date().toISOString()
                 };
                 
-                await database.ref('userProfiles/' + auth.currentUser.uid).set(userProfile);
+                await database.ref('userProfiles/' + auth.currentUser.uid).update(userProfile);
                 console.log('User profile saved');
             } catch (error) {
                 console.error('Error saving user profile:', error);
@@ -2039,8 +2129,8 @@
             // Update checked in count
             document.getElementById('dashboardCheckedInCount').textContent = checkedInUsers.length;
             
-            // Update total contacts count
-            const totalContacts = getAllEventAttendees().length;
+            // Update total contacts count (excluding current user)
+            const totalContacts = getAllEventAttendees().filter(p => p.id !== currentUser?.id).length;
             document.getElementById('totalContactsCount').textContent = totalContacts;
             
             // Update categories count
@@ -2055,9 +2145,12 @@
         }
         
         function updateDashboardStats() {
-            // Update connections count (people from events)
-            const connections = getAllEventAttendees().filter(person => person.id !== currentUser?.id).length;
-            document.getElementById('connectionsCount').textContent = connections;
+            // Update connections count
+            let connectionsCount = 0;
+            if (currentUser && connections[currentUser.id]) {
+                connectionsCount = Object.values(connections[currentUser.id]).filter(status => status === 'connected').length;
+            }
+            document.getElementById('connectionsCount').textContent = connectionsCount;
             
             // Update views count (mock for now)
             document.getElementById('viewsCount').textContent = Math.floor(Math.random() * 50) + 10;
@@ -2072,6 +2165,9 @@
                 if (currentUser.bio) score += 10;
             }
             document.getElementById('networkingScore').textContent = score;
+            
+            // Update request badge
+            updateRequestBadge();
         }
         
         // Directory Functions
@@ -2103,14 +2199,33 @@
             const categoryIcons = {
                 'Technology': '💻',
                 'Finance': '💰',
-                'Payments': '💳',
                 'Real Estate': '🏢',
                 'Legal': '⚖️',
                 'Healthcare': '🏥',
                 'Consulting': '📊',
                 'Marketing': '📱',
+                'E-commerce': '🛒',
                 'Hospitality': '🏨',
                 'Retail': '🛍️',
+                'Manufacturing': '🏭',
+                'Construction': '🏗️',
+                'Education': '🎓',
+                'Media': '📺',
+                'Insurance': '🛡️',
+                'Logistics': '🚚',
+                'Energy': '⚡',
+                'Agriculture': '🌾',
+                'Automotive': '🚗',
+                'Aviation': '✈️',
+                'Telecom': '📡',
+                'Pharma': '💊',
+                'Food & Beverage': '🍽️',
+                'Fashion': '👗',
+                'Sports': '⚽',
+                'Entertainment': '🎬',
+                'Travel': '🌍',
+                'Non-Profit': '🤝',
+                'Government': '🏛️',
                 'Other': '🌐'
             };
             
@@ -2163,17 +2278,28 @@
                 return;
             }
             
-            directoryGrid.innerHTML = attendees.map(person => `
-                <div class="directory-card" onclick="showContactDetail('${person.id}')">
-                    <div class="directory-avatar">${getInitials(person.fullName || person.name)}</div>
-                    <div class="directory-info">
-                        <div class="directory-name">${person.fullName || person.name}</div>
-                        <div class="directory-title">${person.jobTitle || 'Professional'}</div>
-                        <div class="directory-company">${person.business || 'Company'}</div>
+            directoryGrid.innerHTML = attendees.map(person => {
+                const connectionStatus = getConnectionStatus(person.id);
+                const buttonHtml = connectionStatus === 'connected' 
+                    ? '<button class="connect-btn connected" disabled>✓ Connected</button>'
+                    : connectionStatus === 'pending' 
+                    ? '<button class="connect-btn pending" disabled>Pending</button>'
+                    : `<button class="connect-btn" onclick="sendConnectionRequest('${person.id}', event)">Connect</button>`;
+                
+                const tenure = person.companyAge || 'New';
+                
+                return `
+                    <div class="directory-card" onclick="showContactDetail('${person.id}')">
+                        <div class="directory-avatar">${getInitials(person.fullName || person.name)}</div>
+                        <div class="directory-info">
+                            <div class="directory-name">${person.fullName || person.name}</div>
+                            <div class="directory-title">${person.jobTitle || 'Professional'}</div>
+                            <div class="directory-company">${person.business || 'Company'} • ${tenure}</div>
+                        </div>
+                        ${buttonHtml}
                     </div>
-                    <div class="directory-badge">${person.industry || 'Other'}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         
         function loadCategories() {
@@ -2196,14 +2322,9 @@
             
             categoriesGrid.innerHTML = categories.map(category => `
                 <div class="category-card" onclick="showDirectoryWithCategory('${category.name}')">
-                    <div class="category-info">
-                        <div class="category-icon">${category.icon}</div>
-                        <div class="category-details">
-                            <div class="category-name">${category.name}</div>
-                            <div class="category-count">${category.count} ${category.count === 1 ? 'person' : 'people'}</div>
-                        </div>
-                    </div>
-                    <div class="category-arrow">→</div>
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-count">${category.count} ${category.count === 1 ? 'person' : 'people'}</div>
                 </div>
             `).join('');
         }
@@ -2233,6 +2354,9 @@
             const person = getAllEventAttendees().find(p => p.id === userId);
             if (!person) return;
             
+            const connectionStatus = getConnectionStatus(person.id);
+            const isConnected = connectionStatus === 'connected';
+            
             const detailContent = document.getElementById('contactDetailContent');
             detailContent.innerHTML = `
                 <div class="contact-detail-card">
@@ -2241,18 +2365,41 @@
                         <div class="contact-basic-info">
                             <h2 style="font-size: 24px; margin-bottom: 8px;">${person.fullName || person.name}</h2>
                             <div style="font-size: 16px; color: var(--accent-color); margin-bottom: 4px;">${person.jobTitle || 'Professional'}</div>
-                            <div style="font-size: 14px; color: var(--text-secondary);">${person.business || 'Company'}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">${person.business || 'Company'} • ${person.companyAge || 'New'}</div>
                         </div>
                     </div>
                     
                     <div class="contact-actions">
-                        <button class="contact-action-btn" onclick="saveContact('${person.id}')">
-                            <span>💾</span> Save Contact
-                        </button>
-                        <button class="contact-action-btn" onclick="connectWithPerson('${person.id}')">
-                            <span>🔗</span> Connect
-                        </button>
+                        ${connectionStatus === 'connected' 
+                            ? '<button class="contact-action-btn" style="background: var(--success-color); color: white;" disabled><span>✓</span> Connected</button>'
+                            : connectionStatus === 'pending'
+                            ? '<button class="contact-action-btn" disabled><span>⏳</span> Request Pending</button>'
+                            : `<button class="contact-action-btn" onclick="connectWithPerson('${person.id}')"><span>🔗</span> Connect</button>`
+                        }
+                        ${isConnected ? `<button class="contact-action-btn" onclick="saveContact('${person.id}')"><span>💾</span> Save Contact</button>` : ''}
                     </div>
+                    
+                    ${isConnected ? `
+                        <div class="info-section">
+                            <div class="info-section-title">Contact Information</div>
+                            <div style="background: var(--glass-bg); padding: 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                                <div style="font-size: 14px; margin-bottom: 8px;">
+                                    <span style="color: var(--text-secondary);">Email:</span> 
+                                    <span style="color: var(--accent-color);">${person.email || 'Not provided'}</span>
+                                </div>
+                                <div style="font-size: 14px;">
+                                    <span style="color: var(--text-secondary);">Phone:</span> 
+                                    <span style="color: var(--accent-color);">${person.phone || 'Connect to see phone'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="background: var(--glass-bg); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; margin: 20px 0;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🔒</div>
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">Connect to View Contact Details</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">Send a connection request to exchange contact information</div>
+                        </div>
+                    `}
                     
                     <div class="info-section">
                         <div class="info-section-title">Professional Information</div>
@@ -2311,6 +2458,101 @@
             `;
         }
         
+        function getConnectionStatus(userId) {
+            if (!currentUser || !connections[currentUser.id]) return null;
+            
+            const userConnections = connections[currentUser.id];
+            if (userConnections[userId] === 'connected') return 'connected';
+            if (userConnections[userId] === 'pending') return 'pending';
+            
+            // Check if they sent us a request
+            if (connections[userId] && connections[userId][currentUser.id] === 'pending') {
+                return 'requested';
+            }
+            
+            return null;
+        }
+        
+        function checkIncomingRequests() {
+            if (!currentUser || !connections) return 0;
+            
+            let requestCount = 0;
+            Object.keys(connections).forEach(senderId => {
+                if (senderId !== currentUser.id && connections[senderId][currentUser.id] === 'pending') {
+                    // Check if we haven't already responded
+                    if (!connections[currentUser.id] || connections[currentUser.id][senderId] !== 'connected') {
+                        requestCount++;
+                    }
+                }
+            });
+            
+            return requestCount;
+        }
+        
+        function sendConnectionRequest(userId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            if (!currentUser) {
+                showNotification('Please login to connect', true);
+                return;
+            }
+            
+            // Initialize connections for current user if not exists
+            if (!connections[currentUser.id]) {
+                connections[currentUser.id] = {};
+            }
+            
+            // Set connection as pending
+            connections[currentUser.id][userId] = 'pending';
+            
+            // Save to Firebase
+            if (isFirebaseAvailable) {
+                database.ref('connections/' + currentUser.id + '/' + userId).set('pending');
+                
+                // Create a notification for the other user
+                const notification = {
+                    from: currentUser.id,
+                    to: userId,
+                    type: 'connection_request',
+                    fromName: currentUser.fullName,
+                    fromTitle: currentUser.jobTitle,
+                    fromCompany: currentUser.business,
+                    timestamp: new Date().toISOString(),
+                    status: 'unread'
+                };
+                
+                database.ref('notifications/' + userId).push(notification);
+            }
+            
+            showNotification('Connection request sent!');
+            
+            // Update UI
+            const category = document.getElementById('categoryFilter').value;
+            loadDirectory(category);
+        }
+        
+        function acceptConnection(userId) {
+            if (!currentUser || !connections[currentUser.id]) return;
+            
+            // Update both sides of the connection
+            connections[currentUser.id][userId] = 'connected';
+            
+            if (!connections[userId]) {
+                connections[userId] = {};
+            }
+            connections[userId][currentUser.id] = 'connected';
+            
+            // Save to Firebase
+            if (isFirebaseAvailable) {
+                database.ref('connections/' + currentUser.id + '/' + userId).set('connected');
+                database.ref('connections/' + userId + '/' + currentUser.id).set('connected');
+            }
+            
+            showNotification('Connection accepted!');
+        }
+        
         function goBackFromDetail() {
             showScreen(previousScreen);
             if (previousScreen === 'directoryScreen') {
@@ -2323,7 +2565,11 @@
         }
         
         function connectWithPerson(userId) {
-            showNotification('Connection request sent! Feature coming soon.');
+            sendConnectionRequest(userId);
+            // Update the UI immediately
+            setTimeout(() => {
+                showContactDetail(userId);
+            }, 500);
         }
         
         function getInitials(name) {
@@ -2352,6 +2598,7 @@
             document.getElementById('profileName').value = currentUser.fullName || '';
             document.getElementById('profileBusiness').value = currentUser.business || '';
             document.getElementById('profileJobTitle').value = currentUser.jobTitle || '';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
             document.getElementById('profileIndustry').value = currentUser.industry || '';
             document.getElementById('profileCompanyAge').value = currentUser.companyAge || '';
             document.getElementById('profileCompanySize').value = currentUser.companySize || '';
@@ -2368,6 +2615,7 @@
                 fullName: document.getElementById('profileName').value.trim(),
                 business: document.getElementById('profileBusiness').value.trim(),
                 jobTitle: document.getElementById('profileJobTitle').value.trim(),
+                phone: document.getElementById('profilePhone').value.trim(),
                 industry: document.getElementById('profileIndustry').value,
                 companyAge: document.getElementById('profileCompanyAge').value,
                 companySize: document.getElementById('profileCompanySize').value,
@@ -2402,6 +2650,59 @@
         
         function showEventsScreen() {
             showScreen('eventsScreen');
+        }
+        
+        function showIncomingRequests() {
+            if (!currentUser) {
+                showNotification('Please login to view requests', true);
+                return;
+            }
+            
+            let incomingRequests = [];
+            if (connections) {
+                Object.keys(connections).forEach(senderId => {
+                    if (senderId !== currentUser.id && connections[senderId][currentUser.id] === 'pending') {
+                        // Check if we haven't already responded
+                        if (!connections[currentUser.id] || connections[currentUser.id][senderId] !== 'connected') {
+                            // Find the sender's details
+                            const sender = getAllEventAttendees().find(p => p.id === senderId);
+                            if (sender) {
+                                incomingRequests.push(sender);
+                            }
+                        }
+                    }
+                });
+            }
+            
+            if (incomingRequests.length === 0) {
+                showNotification('No pending connection requests');
+            } else {
+                // For now, just show a notification. In a full implementation, 
+                // this would open a modal or screen to manage requests
+                showNotification(`You have ${incomingRequests.length} pending connection request${incomingRequests.length > 1 ? 's' : ''}`);
+                
+                // Auto-accept the first request for demo purposes
+                if (incomingRequests[0]) {
+                    setTimeout(() => {
+                        acceptConnection(incomingRequests[0].id);
+                        showNotification(`Connected with ${incomingRequests[0].fullName || incomingRequests[0].name}!`);
+                        updateRequestBadge();
+                    }, 1500);
+                }
+            }
+        }
+        
+        function updateRequestBadge() {
+            const badge = document.getElementById('requestBadge');
+            if (!badge) return;
+            
+            const requestCount = checkIncomingRequests();
+            if (requestCount > 0) {
+                badge.textContent = requestCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
         }
         
         function showFeedbackModal() {
@@ -2630,6 +2931,34 @@
                     loadCategories();
                 }
             });
+            
+            // Load connections
+            database.ref('connections').on('value', (snapshot) => {
+                const data = snapshot.val();
+                connections = data || {};
+                console.log('Loaded connections:', connections);
+                
+                // Update UI if on directory or contact detail screen
+                if (document.getElementById('directoryScreen').classList.contains('active')) {
+                    loadDirectory(document.getElementById('categoryFilter').value);
+                }
+                
+                // Update request badge
+                updateRequestBadge();
+            });
+            
+            // Load connection requests for current user
+            if (currentUser) {
+                database.ref('notifications/' + currentUser.id).on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        connectionRequests = Object.values(data).filter(n => 
+                            n.type === 'connection_request' && n.status === 'unread'
+                        );
+                        // Update UI to show pending requests (future feature)
+                    }
+                });
+            }
         }
         
         // Initialize app
