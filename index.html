@@ -43,7 +43,15 @@
         }
         
         #dashboardScreen {
-            padding: 20px 20px 100px 20px;
+            padding: 20px 20px 20px 20px;
+        }
+        
+        /* Other screens keep the original padding */
+        #discoverScreen,
+        #matchesScreen, 
+        #profileScreen,
+        #eventsScreen {
+            padding: 20px 20px 20px 20px;
         }
         
         .header {
@@ -417,176 +425,206 @@
                 </div>
             </div>
             
-            <!-- Quick Stats Cards -->
+            <!-- Tonight's Event Card -->
+            <div class="dashboard-card" style="grid-column: 1 / -1; margin-bottom: 20px;" onclick="joinEvent()">
+                <div class="card-icon">📅</div>
+                <div class="card-title">Tonight's Event</div>
+                <div class="card-value">Expat Entrepreneurs Meetup</div>
+                <div class="card-subtitle"><span id="dashboardCheckedInCount">0</span> people checked in • 7:00 PM</div>
+            </div>
+            
+            <!-- Feature Cards Grid -->
             <div class="dashboard-cards">
-                <div class="dashboard-card">
-                    <div class="card-icon">👥</div>
-                    <div class="card-title">Tonight's Event</div>
-                    <div class="card-value"><span id="dashboardCheckedInCount">0</span></div>
-                    <div class="card-subtitle">people checked in</div>
-                </div>
-                <div class="dashboard-card secondary">
+                <!-- Matches Card -->
+                <div class="dashboard-card secondary" onclick="showMatchesScreen()">
                     <div class="card-icon">🔥</div>
-                    <div class="card-title">Your Matches</div>
+                    <div class="card-title">Matches</div>
                     <div class="card-value"><span id="totalMatchesMain">0</span></div>
-                    <div class="card-subtitle">connections made</div>
+                    <div class="card-subtitle">connections</div>
+                </div>
+                
+                <!-- Discover Card -->
+                <div class="dashboard-card secondary" onclick="showDiscoverScreen()">
+                    <div class="card-icon">🔍</div>
+                    <div class="card-title">Discover</div>
+                    <div class="card-value"><span id="totalPeopleCount">0</span></div>
+                    <div class="card-subtitle">people to meet</div>
                 </div>
             </div>
             
-            <!-- Main Content Area -->
-            <div id="dashboardMainContent">
-                
-                <!-- Discover Tab (Main Swiping) -->
-                <div id="discoverContent" class="dashboard-tab-content active">
-                    <div class="section-header">Discover People</div>
-                    
-                    <!-- Event Status -->
-                    <div class="networking-card">
-                        <div style="text-align: center; padding: 8px 0;">
-                            <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">📅 Expat Entrepreneurs Meetup DXB</div>
-                            <div style="font-size: 12px; color: #666666;">Tonight • 7:00 PM - 9:00 PM • Lock, Stock & Barrel JBR</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Main Card Stack -->
-                    <div class="main-card" id="dashboardCardStack">
-                        <div style="text-align: center; color: #666666;">
-                            <div style="font-size: 48px; margin-bottom: 16px;">👋</div>
-                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Ready to Network?</div>
-                            <div style="font-size: 14px; margin-bottom: 24px;">Check in to tonight's event to start meeting people!</div>
-                            <button class="btn" onclick="joinEvent()" style="padding: 12px 32px; border-radius: 16px;">CHECK IN TO EVENT</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Swipe Controls -->
-                    <div class="swipe-controls">
-                        <button class="swipe-btn reject" onclick="swipeLeft()" title="Pass">✕</button>
-                        <button class="swipe-btn super-like" onclick="superLike()" title="Super Like">★</button>
-                        <button class="swipe-btn like" onclick="swipeRight()" title="Like">❤</button>
-                    </div>
+            <div class="dashboard-cards">
+                <!-- Profile Card -->
+                <div class="dashboard-card secondary" onclick="showProfileScreen()">
+                    <div class="card-icon">👤</div>
+                    <div class="card-title">Profile</div>
+                    <div class="card-value">Edit</div>
+                    <div class="card-subtitle">your info</div>
                 </div>
                 
-                <!-- Matches Tab -->
-                <div id="matchesContent" class="dashboard-tab-content">
-                    <div class="section-header">Your Matches</div>
-                    
-                    <!-- Stats Row -->
-                    <div class="stats-row">
-                        <div class="stat-item">
-                            <div class="stat-number" id="totalMatches">0</div>
-                            <div class="stat-label">Matches</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="totalLikes">0</div>
-                            <div class="stat-label">Likes</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="totalSuperLikes">0</div>
-                            <div class="stat-label">Super Likes</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Matches List -->
-                    <div id="dashboardMatchesGrid" class="matches-list">
-                        <div class="empty-state" style="grid-column: 1 / -1;">
-                            <div class="empty-icon">💫</div>
-                            <div class="empty-title">No matches yet!</div>
-                            <div class="empty-subtitle">Start swiping to find your connections</div>
-                        </div>
-                    </div>
+                <!-- Events Card -->
+                <div class="dashboard-card secondary" onclick="showEventsScreen()">
+                    <div class="card-icon">🎫</div>
+                    <div class="card-title">Events</div>
+                    <div class="card-value">1</div>
+                    <div class="card-subtitle">attended</div>
                 </div>
-                
-                <!-- Profile Tab -->
-                <div id="profileContent" class="dashboard-tab-content">
-                    <div class="section-header">Your Profile</div>
-                    
-                    <!-- Profile Preview -->
-                    <div class="profile-preview-card">
-                        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-                            <div style="width: 50px; height: 50px; background: #6dd4ec; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: white; margin-right: 16px;" id="profilePreviewAvatar">TU</div>
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;" id="profilePreviewName">Test User</div>
-                                <div style="font-size: 14px; color: #666666;" id="profilePreviewBusiness">Entrepreneur</div>
-                            </div>
-                        </div>
-                        <div style="font-size: 14px; color: #666666; line-height: 1.4;" id="profilePreviewBio">Add a bio to tell others about yourself...</div>
-                    </div>
-                    
-                    <!-- Edit Profile Form -->
-                    <div class="networking-card">
-                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Edit Profile</div>
-                        
-                        <div class="input-group">
-                            <label>Full Name</label>
-                            <input type="text" id="profileName" placeholder="Your full name">
-                        </div>
-                        
-                        <div class="input-group">
-                            <label>Business/Company</label>
-                            <input type="text" id="profileBusiness" placeholder="Your company or role">
-                        </div>
-                        
-                        <div class="input-group">
-                            <label>Industry</label>
-                            <input type="text" id="profileIndustry" placeholder="Your industry">
-                        </div>
-                        
-                        <div class="input-group">
-                            <label>Bio</label>
-                            <textarea id="profileBio" placeholder="Tell others about yourself..." style="width: 100%; min-height: 80px; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
-                        </div>
-                        
-                        <button class="btn" onclick="saveProfile()" style="border-radius: 12px;">SAVE PROFILE</button>
-                    </div>
-                </div>
-                
-                <!-- More Tab -->
-                <div id="moreContent" class="dashboard-tab-content">
-                    <div class="section-header">Settings & More</div>
-                    
-                    <!-- My Events -->
-                    <div class="networking-card">
-                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">📅 My Events</div>
-                        <div id="myEventsList">
-                            <div class="empty-state">
-                                <div class="empty-icon">🎫</div>
-                                <div class="empty-title">No events yet</div>
-                                <div class="empty-subtitle">Check back for new ProLink events!</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Settings -->
-                    <div class="networking-card">
-                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">⚙️ Settings</div>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button class="btn btn-secondary" onclick="showFeedbackModal()" style="font-size: 14px; padding: 12px; border-radius: 12px;">📝 Send Feedback</button>
-                            <button class="btn btn-secondary" onclick="showAboutModal()" style="font-size: 14px; padding: 12px; border-radius: 12px;">ℹ️ About ProLink</button>
-                            <button class="btn btn-secondary" onclick="signOut()" style="font-size: 14px; padding: 12px; border-radius: 12px; color: #ff4757; border-color: #ff4757;">🚪 Sign Out</button>
-                        </div>
-                    </div>
-                </div>
-                
             </div>
             
-            <!-- Bottom Navigation -->
-            <div class="bottom-nav">
-                <button class="nav-tab active" data-tab="discover" onclick="showDashboardTab('discover')">
-                    <div class="nav-icon">🔍</div>
-                    <div class="nav-text">DISCOVER</div>
-                </button>
-                <button class="nav-tab" data-tab="matches" onclick="showDashboardTab('matches')">
-                    <div class="nav-icon">🔥</div>
-                    <div class="nav-text">MATCHES</div>
-                </button>
-                <button class="nav-tab" data-tab="profile" onclick="showDashboardTab('profile')">
-                    <div class="nav-icon">👤</div>
-                    <div class="nav-text">PROFILE</div>
-                </button>
-                <button class="nav-tab" data-tab="more" onclick="showDashboardTab('more')">
-                    <div class="nav-icon">⚙️</div>
-                    <div class="nav-text">MORE</div>
-                </button>
+            <!-- Stats Row -->
+            <div class="stats-row" style="margin-top: 20px;">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalLikesMain">0</div>
+                    <div class="stat-label">Likes Given</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSuperLikesMain">0</div>
+                    <div class="stat-label">Super Likes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="networkingScore">85</div>
+                    <div class="stat-label">Network Score</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Discover Screen -->
+        <div id="discoverScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0;">Discover People</h3>
+                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="background: rgba(109, 212, 236, 0.1); padding: 8px 12px; border-radius: 12px; font-size: 12px; color: #666666; display: inline-block;">
+                    <span id="dashboardCurrentCard">1</span> of <span id="dashboardTotalCards">0</span> people
+                </div>
+            </div>
+            
+            <!-- Main Card Stack -->
+            <div class="main-card" id="dashboardCardStack">
+                <div style="text-align: center; color: #666666;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">👋</div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #1a1a1a;">Ready to Network?</div>
+                    <div style="font-size: 14px; margin-bottom: 24px;">Check in to tonight's event to start meeting people!</div>
+                    <button class="btn" onclick="joinEvent()" style="padding: 12px 32px; border-radius: 16px;">CHECK IN TO EVENT</button>
+                </div>
+            </div>
+            
+            <!-- Swipe Controls -->
+            <div class="swipe-controls">
+                <button class="swipe-btn reject" onclick="swipeLeft()" title="Pass">✕</button>
+                <button class="swipe-btn super-like" onclick="superLike()" title="Super Like">★</button>
+                <button class="swipe-btn like" onclick="swipeRight()" title="Like">❤</button>
+            </div>
+        </div>
+        
+        <!-- Matches Screen -->
+        <div id="matchesScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0;">Your Matches</h3>
+                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
+            </div>
+            
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalMatches">0</div>
+                    <div class="stat-label">Matches</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalLikes">0</div>
+                    <div class="stat-label">Likes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSuperLikes">0</div>
+                    <div class="stat-label">Super Likes</div>
+                </div>
+            </div>
+            
+            <!-- Matches List -->
+            <div id="dashboardMatchesGrid" class="matches-list">
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-icon">💫</div>
+                    <div class="empty-title">No matches yet!</div>
+                    <div class="empty-subtitle">Start swiping to find your connections</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Screen -->
+        <div id="profileScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0;">Your Profile</h3>
+                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
+            </div>
+            
+            <!-- Profile Preview -->
+            <div class="profile-preview-card">
+                <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                    <div style="width: 50px; height: 50px; background: #6dd4ec; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: white; margin-right: 16px;" id="profilePreviewAvatar">TU</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;" id="profilePreviewName">Test User</div>
+                        <div style="font-size: 14px; color: #666666;" id="profilePreviewBusiness">Entrepreneur</div>
+                    </div>
+                </div>
+                <div style="font-size: 14px; color: #666666; line-height: 1.4;" id="profilePreviewBio">Add a bio to tell others about yourself...</div>
+            </div>
+            
+            <!-- Edit Profile Form -->
+            <div class="networking-card">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 16px;">Edit Profile</div>
+                
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profileName" placeholder="Your full name">
+                </div>
+                
+                <div class="input-group">
+                    <label>Business/Company</label>
+                    <input type="text" id="profileBusiness" placeholder="Your company or role">
+                </div>
+                
+                <div class="input-group">
+                    <label>Industry</label>
+                    <input type="text" id="profileIndustry" placeholder="Your industry">
+                </div>
+                
+                <div class="input-group">
+                    <label>Bio</label>
+                    <textarea id="profileBio" placeholder="Tell others about yourself..." style="width: 100%; min-height: 80px; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                
+                <button class="btn" onclick="saveProfile()" style="border-radius: 12px;">SAVE PROFILE</button>
+            </div>
+        </div>
+        
+        <!-- Events Screen -->
+        <div id="eventsScreen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; margin: 0;">My Events</h3>
+                <button class="dashboard-icon-btn" onclick="showScreen('dashboardScreen'); loadDashboardData();">←</button>
+            </div>
+            
+            <!-- Events List -->
+            <div class="networking-card">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">📅 Event History</div>
+                <div id="myEventsList">
+                    <div class="empty-state">
+                        <div class="empty-icon">🎫</div>
+                        <div class="empty-title">No events yet</div>
+                        <div class="empty-subtitle">Check back for new ProLink events!</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings -->
+            <div class="networking-card">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">⚙️ Settings</div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="showFeedbackModal()" style="font-size: 14px; padding: 12px; border-radius: 12px;">📝 Send Feedback</button>
+                    <button class="btn btn-secondary" onclick="showAboutModal()" style="font-size: 14px; padding: 12px; border-radius: 12px;">ℹ️ About ProLink</button>
+                    <button class="btn btn-secondary" onclick="signOut()" style="font-size: 14px; padding: 12px; border-radius: 12px; color: #ff4757; border-color: #ff4757;">🚪 Sign Out</button>
+                </div>
             </div>
         </div>
     </div>
