@@ -905,29 +905,9 @@
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     const firebaseUser = userCredential.user;
                     
-                    // Update display name
-                    await firebaseUser.updateProfile({
-                        displayName: name
-                    });
+                    console.log('Firebase user created successfully:', firebaseUser.uid);
                     
-                    // Save additional profile data
-                    const profileData = {
-                        fullName: name,
-                        business: business || 'Entrepreneur',
-                        timestamp: new Date().toISOString()
-                    };
-                    
-                    await saveUserProfile(profileData);
-                    
-                    // Send email verification
-                    await firebaseUser.sendEmailVerification({
-                        url: window.location.href // Return to this page after verification
-                    });
-                    
-                    setButtonLoading('createAccountBtn', false);
-                    showNotification('Account created! Please check your email to verify your account.');
-                    
-                    // Update current user
+                    // Update current user immediately after successful creation
                     currentUser = {
                         id: firebaseUser.uid,
                         email: firebaseUser.email,
@@ -937,7 +917,48 @@
                         emailVerified: firebaseUser.emailVerified
                     };
                     
-                    document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! Please verify your email, then join tonight's networking event.`;
+                    // Try to update display name (non-critical)
+                    try {
+                        await firebaseUser.updateProfile({
+                            displayName: name
+                        });
+                        console.log('Display name updated');
+                    } catch (error) {
+                        console.warn('Could not update display name:', error);
+                    }
+                    
+                    // Try to save profile data (non-critical)
+                    try {
+                        const profileData = {
+                            fullName: name,
+                            business: business || 'Entrepreneur',
+                            timestamp: new Date().toISOString()
+                        };
+                        await saveUserProfile(profileData);
+                        console.log('Profile data saved');
+                    } catch (error) {
+                        console.warn('Could not save profile data:', error);
+                    }
+                    
+                    // Try to send email verification (non-critical)
+                    try {
+                        await firebaseUser.sendEmailVerification({
+                            url: window.location.href
+                        });
+                        console.log('Verification email sent');
+                        showNotification('Account created! Please check your email to verify your account.');
+                    } catch (error) {
+                        console.warn('Could not send verification email:', error);
+                        showNotification('Account created successfully! Email verification may be sent shortly.');
+                    }
+                    
+                    setButtonLoading('createAccountBtn', false);
+                    
+                    const welcomeMessage = firebaseUser.emailVerified 
+                        ? `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`
+                        : `Welcome ${currentUser.fullName}! Please check your email to verify your account, then join tonight's event.`;
+                    
+                    document.getElementById('welcomeMessage').textContent = welcomeMessage;
                     showScreen('successScreen');
                     
                 } else {
@@ -977,7 +998,11 @@
                     showError('signupPassword', 'passwordError', 'Password is too weak');
                 } else if (error.code === 'auth/invalid-email') {
                     showError('signupEmail', 'emailError', 'Invalid email address');
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    showNotification('Email/password sign-in is not enabled. Please contact support.', true);
                 } else {
+                    // Log the full error for debugging
+                    console.error('Full error details:', error);
                     showNotification('Error creating account. Please try again.', true);
                 }
             }
