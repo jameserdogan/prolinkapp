@@ -378,7 +378,7 @@
             letter-spacing: 0.5px;
         }
         
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 14px 16px;
             background: var(--glass-bg);
@@ -390,7 +390,22 @@
             font-family: inherit;
         }
         
-        input:focus, textarea:focus {
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0a0a0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+        
+        select option {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            padding: 8px;
+        }
+        
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--accent-color);
             background: rgba(102, 126, 234, 0.05);
@@ -981,7 +996,18 @@
                     <div class="match-avatar" id="profilePreviewAvatar" style="margin-right: 16px;">TU</div>
                     <div style="flex: 1;">
                         <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;" id="profilePreviewName">Test User</div>
-                        <div style="font-size: 14px; color: var(--text-secondary);" id="profilePreviewBusiness">Entrepreneur</div>
+                        <div style="font-size: 14px; color: var(--text-secondary);" id="profilePreviewJobTitle">Job Title</div>
+                        <div style="font-size: 13px; color: var(--text-secondary);" id="profilePreviewBusiness">Company Name</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                    <div style="background: var(--glass-bg); padding: 8px 12px; border-radius: 8px; font-size: 12px;">
+                        <div style="color: var(--text-secondary); margin-bottom: 2px;">Focus Area</div>
+                        <div id="profilePreviewFocus" style="font-weight: 500;">Not set</div>
+                    </div>
+                    <div style="background: var(--glass-bg); padding: 8px 12px; border-radius: 8px; font-size: 12px;">
+                        <div style="color: var(--text-secondary); margin-bottom: 2px;">Company Size</div>
+                        <div id="profilePreviewSize" style="font-weight: 500;">Not set</div>
                     </div>
                 </div>
                 <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.4;" id="profilePreviewBio">Add a bio to tell others about yourself...</div>
@@ -998,17 +1024,101 @@
                 
                 <div class="input-group">
                     <label>Business/Company</label>
-                    <input type="text" id="profileBusiness" placeholder="Your company or role">
+                    <input type="text" id="profileBusiness" placeholder="Your company name">
+                </div>
+                
+                <div class="input-group">
+                    <label>Job Title</label>
+                    <input type="text" id="profileJobTitle" placeholder="Your job title">
                 </div>
                 
                 <div class="input-group">
                     <label>Industry</label>
-                    <input type="text" id="profileIndustry" placeholder="Your industry">
+                    <select id="profileIndustry">
+                        <option value="">Select your industry</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Finance">Finance & Banking</option>
+                        <option value="Payments">Payments</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Hospitality">Hospitality</option>
+                        <option value="Consulting">Consulting</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Company has been in business for</label>
+                    <select id="profileCompanyAge">
+                        <option value="">Select years in business</option>
+                        <option value="Less than 1 year">Less than 1 year</option>
+                        <option value="1-2 years">1-2 years</option>
+                        <option value="3-5 years">3-5 years</option>
+                        <option value="More than 5 years">More than 5 years</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Number of employees at my organisation</label>
+                    <select id="profileCompanySize">
+                        <option value="">Select company size</option>
+                        <option value="1-10">1-10</option>
+                        <option value="11-50">11-50</option>
+                        <option value="51-200">51-200</option>
+                        <option value="201-500">201-500</option>
+                        <option value="501-1000">501-1,000</option>
+                        <option value="1001-5000">1,001-5,000</option>
+                        <option value="5001-10000">5,001-10,000</option>
+                        <option value="10001+">10,001+</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>I'm coming to the event to</label>
+                    <select id="profileEventGoal">
+                        <option value="">Select your goal</option>
+                        <option value="Find new clients">Find new clients</option>
+                        <option value="Identify potential partners">Identify potential partners</option>
+                        <option value="Network with peers">Network with peers</option>
+                        <option value="Learn industry trends">Learn industry trends</option>
+                        <option value="Find investors">Find investors</option>
+                        <option value="Recruit talent">Recruit talent</option>
+                        <option value="Find suppliers">Find suppliers</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>Main area of focus in my role</label>
+                    <select id="profileRoleFocus">
+                        <option value="">Select your focus area</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Payments">Payments</option>
+                        <option value="Product Development">Product Development</option>
+                        <option value="Business Development">Business Development</option>
+                        <option value="Strategy">Strategy</option>
+                        <option value="HR">Human Resources</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label>My role in purchasing decisions</label>
+                    <select id="profilePurchaseRole">
+                        <option value="">Select your role</option>
+                        <option value="I make final decisions">I make final decisions</option>
+                        <option value="I influence purchases">I influence purchases</option>
+                        <option value="I research options">I research options</option>
+                        <option value="Not involved">Not involved in purchasing</option>
+                    </select>
                 </div>
                 
                 <div class="input-group">
                     <label>Bio</label>
-                    <textarea id="profileBio" placeholder="Tell others about yourself..." style="min-height: 80px; resize: vertical;"></textarea>
+                    <textarea id="profileBio" placeholder="Tell others about yourself and what you're looking for..." style="min-height: 80px; resize: vertical;"></textarea>
                 </div>
                 
                 <button class="btn" onclick="saveProfile()">SAVE PROFILE</button>
@@ -1100,8 +1210,15 @@
                 </div>
                 
                 <div class="input-group">
-                    <label>Business/Company (Optional)</label>
-                    <input type="text" id="signupBusiness" placeholder="Your company or role">
+                    <label>Business/Company</label>
+                    <input type="text" id="signupBusiness" placeholder="Your company name" required>
+                    <div class="error-message" id="businessError">Please enter your company name</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Job Title/Role</label>
+                    <input type="text" id="signupJobTitle" placeholder="Your job title" required>
+                    <div class="error-message" id="jobTitleError">Please enter your job title</div>
                 </div>
                 
                 <button type="submit" class="btn" id="createAccountBtn">CREATE ACCOUNT</button>
@@ -1398,8 +1515,14 @@
                     id: firebaseUser.uid,
                     email: firebaseUser.email,
                     fullName: profile?.fullName || firebaseUser.displayName || '',
-                    business: profile?.business || 'Entrepreneur',
+                    business: profile?.business || 'Company',
+                    jobTitle: profile?.jobTitle || 'Professional',
                     industry: profile?.industry || '',
+                    companyAge: profile?.companyAge || '',
+                    companySize: profile?.companySize || '',
+                    eventGoal: profile?.eventGoal || '',
+                    roleFocus: profile?.roleFocus || '',
+                    purchaseRole: profile?.purchaseRole || '',
                     bio: profile?.bio || '',
                     timestamp: profile?.timestamp || new Date().toISOString(),
                     emailVerified: firebaseUser.emailVerified
@@ -1418,6 +1541,7 @@
                 const userProfile = {
                     fullName: profileData.fullName,
                     business: profileData.business,
+                    jobTitle: profileData.jobTitle || 'Professional',
                     timestamp: profileData.timestamp,
                     lastUpdated: new Date().toISOString()
                 };
@@ -1497,12 +1621,15 @@
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const business = document.getElementById('signupBusiness').value.trim();
+            const jobTitle = document.getElementById('signupJobTitle').value.trim();
             
             // Clear previous errors
             clearError('signupEmail', 'emailError');
             clearError('signupName', 'nameError');
             clearError('signupPassword', 'passwordError');
             clearError('confirmPassword', 'confirmPasswordError');
+            clearError('signupJobTitle', 'jobTitleError');
+            clearError('signupBusiness', 'businessError');
             
             let hasError = false;
             
@@ -1515,6 +1642,18 @@
             // Validate name
             if (!name || name.length < 2) {
                 showError('signupName', 'nameError', 'Please enter your full name');
+                hasError = true;
+            }
+            
+            // Validate job title
+            if (!jobTitle || jobTitle.length < 2) {
+                showError('signupJobTitle', 'jobTitleError', 'Please enter your job title');
+                hasError = true;
+            }
+            
+            // Validate business
+            if (!business || business.length < 2) {
+                showError('signupBusiness', 'businessError', 'Please enter your company name');
                 hasError = true;
             }
             
@@ -1551,7 +1690,8 @@
                         id: firebaseUser.uid,
                         email: firebaseUser.email,
                         fullName: name,
-                        business: business || 'Entrepreneur',
+                        business: business || 'Company',
+                        jobTitle: jobTitle || 'Professional',
                         timestamp: new Date().toISOString(),
                         emailVerified: firebaseUser.emailVerified
                     };
@@ -1570,7 +1710,8 @@
                     try {
                         const profileData = {
                             fullName: name,
-                            business: business || 'Entrepreneur',
+                            business: business || 'Company',
+                            jobTitle: jobTitle || 'Professional',
                             timestamp: new Date().toISOString()
                         };
                         await saveUserProfile(profileData);
@@ -1611,7 +1752,8 @@
                         id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                         email: email,
                         fullName: name,
-                        business: business || 'Entrepreneur',
+                        business: business || 'Company',
+                        jobTitle: jobTitle || 'Professional',
                         timestamp: new Date().toISOString(),
                         emailVerified: false
                     };
@@ -1842,7 +1984,7 @@
                         <div class="match-avatar">${getInitials(otherUser.fullName || otherUser.name)}</div>
                         <div class="match-info">
                             <div class="match-name">${otherUser.fullName || otherUser.name}</div>
-                            <div class="match-business">${otherUser.business || 'Entrepreneur'}</div>
+                            <div class="match-business">${otherUser.jobTitle || 'Professional'} at ${otherUser.business || 'Company'}</div>
                         </div>
                         <div class="match-badge">${isSuper ? '⭐' : '🔥'}</div>
                     </div>
@@ -1889,10 +2031,16 @@
                 <div class="profile-card" data-user-id="${profile.id}">
                     <div class="profile-avatar">${getInitials(profile.fullName || profile.name)}</div>
                     <div class="profile-name">${profile.fullName || profile.name}</div>
-                    <div class="profile-business">${profile.business || 'Entrepreneur'}</div>
+                    <div class="profile-business">${profile.jobTitle || 'Professional'} at ${profile.business || 'Company'}</div>
+                    <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;">
+                        ${profile.roleFocus ? `<span style="background: var(--glass-bg); padding: 4px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">${profile.roleFocus}</span>` : ''}
+                        ${profile.companySize ? `<span style="background: var(--glass-bg); padding: 4px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">${profile.companySize} employees</span>` : ''}
+                    </div>
                     <div class="profile-details">
-                        ${profile.industry ? `Industry: ${profile.industry}<br>` : ''}
-                        ${profile.bio ? `${profile.bio}<br>` : 'Looking to connect with fellow entrepreneurs'}
+                        ${profile.industry ? `<div style="margin-bottom: 8px;"><strong>Industry:</strong> ${profile.industry}</div>` : ''}
+                        ${profile.eventGoal ? `<div style="margin-bottom: 8px;"><strong>Looking to:</strong> ${profile.eventGoal}</div>` : ''}
+                        ${profile.purchaseRole ? `<div style="margin-bottom: 8px;"><strong>Decision Role:</strong> ${profile.purchaseRole}</div>` : ''}
+                        ${profile.bio ? `<div style="margin-top: 12px; font-style: italic;">"${profile.bio}"</div>` : '<div style="margin-top: 12px;">Looking to connect with fellow entrepreneurs</div>'}
                     </div>
                 </div>
             `;
@@ -2112,13 +2260,22 @@
             // Update preview
             document.getElementById('profilePreviewAvatar').textContent = getInitials(currentUser.fullName || 'User');
             document.getElementById('profilePreviewName').textContent = currentUser.fullName || 'Your Name';
-            document.getElementById('profilePreviewBusiness').textContent = currentUser.business || 'Your Business';
+            document.getElementById('profilePreviewJobTitle').textContent = currentUser.jobTitle || 'Your Job Title';
+            document.getElementById('profilePreviewBusiness').textContent = currentUser.business || 'Your Company';
+            document.getElementById('profilePreviewFocus').textContent = currentUser.roleFocus || 'Not set';
+            document.getElementById('profilePreviewSize').textContent = currentUser.companySize || 'Not set';
             document.getElementById('profilePreviewBio').textContent = currentUser.bio || 'Add a bio to tell others about yourself...';
             
             // Update form fields
             document.getElementById('profileName').value = currentUser.fullName || '';
             document.getElementById('profileBusiness').value = currentUser.business || '';
+            document.getElementById('profileJobTitle').value = currentUser.jobTitle || '';
             document.getElementById('profileIndustry').value = currentUser.industry || '';
+            document.getElementById('profileCompanyAge').value = currentUser.companyAge || '';
+            document.getElementById('profileCompanySize').value = currentUser.companySize || '';
+            document.getElementById('profileEventGoal').value = currentUser.eventGoal || '';
+            document.getElementById('profileRoleFocus').value = currentUser.roleFocus || '';
+            document.getElementById('profilePurchaseRole').value = currentUser.purchaseRole || '';
             document.getElementById('profileBio').value = currentUser.bio || '';
         }
         
@@ -2128,7 +2285,13 @@
             const profileData = {
                 fullName: document.getElementById('profileName').value.trim(),
                 business: document.getElementById('profileBusiness').value.trim(),
-                industry: document.getElementById('profileIndustry').value.trim(),
+                jobTitle: document.getElementById('profileJobTitle').value.trim(),
+                industry: document.getElementById('profileIndustry').value,
+                companyAge: document.getElementById('profileCompanyAge').value,
+                companySize: document.getElementById('profileCompanySize').value,
+                eventGoal: document.getElementById('profileEventGoal').value,
+                roleFocus: document.getElementById('profileRoleFocus').value,
+                purchaseRole: document.getElementById('profilePurchaseRole').value,
                 bio: document.getElementById('profileBio').value.trim()
             };
             
@@ -2324,7 +2487,8 @@
                 ...currentUser,
                 checkedInAt: new Date().toISOString(),
                 attendeeId: selectedAttendeeId,
-                business: currentUser.business || 'Entrepreneur',
+                business: currentUser.business || 'Company',
+                jobTitle: currentUser.jobTitle || 'Professional',
                 industry: currentUser.industry || 'Business'
             };
             
