@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProLink Events - Networking Swiper</title>
+    <title>ProLink Events Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,6 +86,14 @@
             letter-spacing: 0.5px;
         }
         
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
         .form-section {
             margin-bottom: 28px;
         }
@@ -124,7 +132,7 @@
             font-size: 14px;
         }
         
-        input[type="text"], input[type="email"], select {
+        input[type="text"], input[type="email"], input[type="file"], select, textarea {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid #e0e0e0;
@@ -135,7 +143,7 @@
             background: rgba(255, 255, 255, 0.8);
         }
         
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #6dd4ec;
             background: rgba(255, 255, 255, 1);
@@ -181,7 +189,7 @@
             display: none;
         }
         
-        .submit-btn {
+        .btn {
             width: 100%;
             background: #6dd4ec;
             color: #000000;
@@ -194,15 +202,167 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(109, 212, 236, 0.3);
             letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
         
-        .submit-btn:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(109, 212, 236, 0.4);
             background: #5bc4da;
         }
         
-        /* Swipe Interface Styles */
+        .btn-secondary {
+            background: transparent;
+            color: #6dd4ec;
+            border: 2px solid #6dd4ec;
+        }
+        
+        .btn-secondary:hover {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .attendee-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 16px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .attendee-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attendee-item:hover {
+            background: rgba(109, 212, 236, 0.1);
+        }
+        
+        .attendee-item.selected {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .attendee-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendee-info {
+            flex: 1;
+        }
+        
+        .attendee-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .attendee-ticket {
+            font-size: 12px;
+            color: #666666;
+        }
+        
+        .attendee-item.selected .attendee-ticket {
+            color: #000000;
+        }
+        
+        .check-icon {
+            font-size: 18px;
+            color: #000000;
+            display: none;
+        }
+        
+        .attendee-item.selected .check-icon {
+            display: block;
+        }
+        
+        .search-box {
+            margin-bottom: 16px;
+        }
+        
+        .search-box input {
+            margin-bottom: 0;
+        }
+        
+        .event-info {
+            background: rgba(240, 240, 240, 0.8);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .event-title {
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        
+        .event-details {
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .checked-in-count {
+            background: #6dd4ec;
+            color: #000000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        
+        /* Profile photo upload */
+        .photo-upload {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: #6dd4ec;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-upload:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(109, 212, 236, 0.3);
+        }
+        
+        .photo-upload input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .photo-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .photo-placeholder {
+            font-size: 24px;
+            color: #000000;
+            font-weight: 700;
+        }
+        
+        /* All the swipe interface styles from before */
         .swipe-section {
             display: none;
         }
@@ -293,6 +453,14 @@
             font-weight: 700;
             color: #000000;
             box-shadow: 0 8px 24px rgba(109, 212, 236, 0.3);
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
         
         .profile-name {
@@ -488,16 +656,6 @@
             }
         }
         
-        .powered-by {
-            text-align: center;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(200, 200, 200, 0.5);
-            color: #999999;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
         .connection-status {
             position: fixed;
             top: 20px;
@@ -560,6 +718,16 @@
             transform: translateX(0);
         }
         
+        .powered-by {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(200, 200, 200, 0.5);
+            color: #999999;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
         @media (max-width: 480px) {
             .container {
                 margin: 10px;
@@ -582,55 +750,61 @@
     <div class="container">
         <div class="header">
             <div class="logo">ProLink</div>
-            <div class="subtitle">Swipe to connect with Dubai's top entrepreneurs</div>
+            <div class="subtitle">Dubai's Premium Networking Platform</div>
             <div class="event-badge">
-                Live at Expat Entrepreneurs Meetup
+                Professional Events • Real Connections
             </div>
         </div>
         
-        <!-- Registration Form -->
-        <div id="registrationForm">
-            <form id="networkingForm">
-                <div class="form-section">
-                    <h3>
-                        <div class="section-icon">👤</div>
-                        Your Details
-                    </h3>
-                    <div class="input-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required placeholder="Enter your name">
-                    </div>
-                    <div class="input-group">
-                        <label for="email">Email (optional)</label>
-                        <input type="email" id="email" name="email" placeholder="your@email.com">
-                    </div>
+        <!-- Account Creation Section -->
+        <div id="accountSection" class="section active">
+            <div class="form-section">
+                <h3>
+                    <div class="section-icon">👤</div>
+                    Create Your ProLink Profile
+                </h3>
+                
+                <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    <img id="photoPreview" class="photo-preview" style="display: none;">
+                    <div id="photoPlaceholder" class="photo-placeholder">📷</div>
                 </div>
                 
-                <div class="form-section">
-                    <h3>
-                        <div class="section-icon">🏢</div>
-                        Your Business
-                    </h3>
-                    <div class="input-group">
-                        <label for="business">Company/Business</label>
-                        <input type="text" id="business" name="business" required placeholder="Company name or business">
-                    </div>
-                    <div class="input-group">
-                        <label for="industry">Industry</label>
-                        <select id="industry" name="industry" required>
-                            <option value="">Select your industry</option>
-                            <option value="Tech">Technology</option>
-                            <option value="Real Estate">Real Estate</option>
-                            <option value="Finance">Finance/Fintech</option>
-                            <option value="Marketing">Marketing/Advertising</option>
-                            <option value="E-commerce">E-commerce</option>
-                            <option value="Consulting">Consulting</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Education">Education</option>
-                            <option value="Hospitality">Hospitality/Tourism</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="business">Company/Business</label>
+                    <input type="text" id="business" name="business" required placeholder="Your company or business">
+                </div>
+                
+                <div class="input-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry" name="industry" required>
+                        <option value="">Select your industry</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Real Estate">Real Estate</option>
+                        <option value="Finance">Finance/Fintech</option>
+                        <option value="Marketing">Marketing/Advertising</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Consulting">Consulting</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                        <option value="Hospitality">Hospitality/Tourism</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bio">Short Bio (Optional)</label>
+                    <textarea id="bio" name="bio" rows="3" placeholder="Tell people about yourself and what you do..."></textarea>
                 </div>
                 
                 <div class="form-section">
@@ -639,8 +813,8 @@
                         What are you looking for?
                     </h3>
                     <div class="checkbox-group">
-                        <div class="checkbox-item" onclick="toggleCheckbox('business-partners')">
-                            <input type="checkbox" id="business-partners" name="looking_for" value="Partners">
+                        <div class="checkbox-item" onclick="toggleCheckbox('partners')">
+                            <input type="checkbox" id="partners" name="looking_for" value="Partners">
                             Partners
                         </div>
                         <div class="checkbox-item" onclick="toggleCheckbox('clients')">
@@ -666,27 +840,72 @@
                     </div>
                 </div>
                 
-                <div class="form-section">
-                    <h3>
-                        <div class="section-icon">🏙️</div>
-                        Dubai Experience
-                    </h3>
-                    <div class="input-group">
-                        <select id="dubai_experience" name="dubai_experience" required>
-                            <option value="">How long in Dubai?</option>
-                            <option value="New (0-6 months)">New (0-6 months)</option>
-                            <option value="Recent (6m-2y)">Recent (6 months - 2 years)</option>
-                            <option value="Established (2+ years)">Established (2+ years)</option>
-                        </select>
-                    </div>
+                <div class="input-group">
+                    <label for="dubaiExperience">Dubai Experience</label>
+                    <select id="dubaiExperience" name="dubaiExperience" required>
+                        <option value="">How long in Dubai?</option>
+                        <option value="New (0-6 months)">New (0-6 months)</option>
+                        <option value="Recent (6m-2y)">Recent (6 months - 2 years)</option>
+                        <option value="Established (2+ years)">Established (2+ years)</option>
+                    </select>
                 </div>
                 
-                <button type="submit" class="submit-btn">START SWIPING</button>
-            </form>
+                <button type="button" class="btn" onclick="createAccount()">CREATE ACCOUNT & CONTINUE</button>
+                <button type="button" class="btn btn-secondary" onclick="showLogin()">I ALREADY HAVE AN ACCOUNT</button>
+            </div>
+        </div>
+        
+        <!-- Login Section -->
+        <div id="loginSection" class="section">
+            <div class="form-section">
+                <h3>
+                    <div class="section-icon">🔑</div>
+                    Login to ProLink
+                </h3>
+                
+                <div class="input-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="loginEmail" required placeholder="your@email.com">
+                </div>
+                
+                <button type="button" class="btn" onclick="loginUser()">LOGIN</button>
+                <button type="button" class="btn btn-secondary" onclick="showAccountCreation()">CREATE NEW ACCOUNT</button>
+            </div>
+        </div>
+        
+        <!-- Event Check-in Section -->
+        <div id="checkinSection" class="section">
+            <div class="event-info">
+                <div class="event-title">Expat Entrepreneurs Meetup DXB</div>
+                <div class="event-details">
+                    📅 Monday, June 2, 2025 • 7:00 PM - 9:00 PM<br>
+                    📍 Lock, Stock & Barrel JBR - The Walk<br>
+                    🎯 Launch, Grow & Connect in Dubai
+                </div>
+                <div class="checked-in-count" id="checkedInCount">0 people checked in</div>
+            </div>
+            
+            <div class="form-section">
+                <h3>
+                    <div class="section-icon">✅</div>
+                    Check In to Event
+                </h3>
+                
+                <div class="search-box">
+                    <input type="text" id="attendeeSearch" placeholder="Search for your name..." onkeyup="filterAttendees()">
+                </div>
+                
+                <div class="attendee-list" id="attendeeList">
+                    <!-- Attendee list will be populated here -->
+                </div>
+                
+                <button type="button" class="btn" onclick="addNewAttendee()">I'M NOT ON THE LIST - ADD ME</button>
+                <button type="button" class="btn" id="checkinBtn" onclick="checkInToEvent()" style="display: none;">CHECK IN TO EVENT</button>
+            </div>
         </div>
         
         <!-- Swipe Interface -->
-        <div id="swipeInterface" class="swipe-section">
+        <div id="swipeInterface" class="section">
             <div class="swipe-header">
                 <h3 class="swipe-title">Find Your Connections</h3>
                 <div class="swipe-counter">
@@ -718,7 +937,7 @@
         </div>
         
         <div class="powered-by">
-            Powered by ProLink Events • Dubai's Premium Networking
+            Powered by ProLink Events • Dubai's Premium Networking Platform
         </div>
     </div>
     
@@ -740,13 +959,313 @@
     </div>
     
     <script>
-        let attendees = [];
-        let currentUser = {};
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXuxpRvja1m9gTSb00LUUlJGCMHKPJNEo",
+            authDomain: "prolink-events.firebaseapp.com",
+            databaseURL: "https://prolink-events-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "prolink-events",
+            storageBucket: "prolink-events.firebasestorage.app",
+            messagingSenderId: "311555270415",
+            appId: "1:311555270415:web:8222f1ccb726a01f52407a"
+        };
+        
+        // Initialize Firebase
+        let database;
+        let isFirebaseAvailable = false;
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            isFirebaseAvailable = true;
+            updateConnectionStatus('connected');
+        } catch (error) {
+            console.log('Firebase not available, using local storage fallback');
+            isFirebaseAvailable = false;
+            updateConnectionStatus('disconnected');
+        }
+        
+        // App State
+        let currentUser = null;
+        let allUsers = [];
+        let eventAttendees = [];
+        let checkedInUsers = [];
         let currentCardIndex = 0;
         let profileCards = [];
         let swipes = {};
         let matches = [];
+        let preRegisteredAttendees = [];
         
+        // Pre-registered attendee list from the event
+        const tonightAttendees = [
+            { name: "Farhiya Aden", ticketType: "Early Bird" },
+            { name: "Eman Ahmed", ticketType: "Early Bird" },
+            { name: "Randy Ai", ticketType: "Last Call Admission" },
+            { name: "Jasmine Amaso", ticketType: "General Admission" },
+            { name: "Suzanne Armengol", ticketType: "General Admission" },
+            { name: "Adam Atkins", ticketType: "General Admission" },
+            { name: "Matthieu Bonelli", ticketType: "General Admission" },
+            { name: "Christian Bozic", ticketType: "Last Call Admission" },
+            { name: "Jeremy Breton", ticketType: "General Admission" },
+            { name: "Paulina Castillo", ticketType: "Early Bird" },
+            { name: "Philip Eappen", ticketType: "Last Call Admission" },
+            { name: "Mohamed El Tayeib", ticketType: "General Admission" },
+            { name: "Jackie Frydman", ticketType: "Early Bird" },
+            { name: "Adam Gormley", ticketType: "General Admission" },
+            { name: "Lesley Govender", ticketType: "General Admission" },
+            { name: "Karmin Habibi", ticketType: "Early Bird" },
+            { name: "Jutta Hoffmann", ticketType: "General Admission" },
+            { name: "Danielle Jennins", ticketType: "General Admission" },
+            { name: "Avaneesh Kurup", ticketType: "Early Bird" },
+            { name: "Gary Lamba", ticketType: "General Admission" },
+            { name: "Al Lopez", ticketType: "General Admission" },
+            { name: "Ali Malik", ticketType: "General Admission" },
+            { name: "Barbara Needham", ticketType: "Early Bird" },
+            { name: "Isaiah Nkemboh", ticketType: "Early Bird" },
+            { name: "Chris O'Brien", ticketType: "General Admission" },
+            { name: "Kirsten Oliver", ticketType: "General Admission" },
+            { name: "Craig Potter", ticketType: "General Admission" },
+            { name: "Dev Ravindran", ticketType: "General Admission" },
+            { name: "Joyce Santos", ticketType: "Early Bird" },
+            { name: "Ponraman Vijayakumar", ticketType: "Early Bird" },
+            { name: "Fouad Zaher", ticketType: "Last Call Admission" }
+        ];
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPhotoUpload();
+            setupRealtimeListeners();
+            loadPreRegisteredAttendees();
+        });
+        
+        // Photo upload functionality
+        function setupPhotoUpload() {
+            document.getElementById('photoInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('photoPreview').src = e.target.result;
+                        document.getElementById('photoPreview').style.display = 'block';
+                        document.getElementById('photoPlaceholder').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Load pre-registered attendees
+        function loadPreRegisteredAttendees() {
+            preRegisteredAttendees = tonightAttendees.map((attendee, index) => ({
+                id: 'prereg_' + index,
+                name: attendee.name,
+                ticketType: attendee.ticketType,
+                isPreRegistered: true
+            }));
+            renderAttendeeList();
+        }
+        
+        // Render attendee list
+        function renderAttendeeList() {
+            const attendeeList = document.getElementById('attendeeList');
+            const allAttendees = [...preRegisteredAttendees, ...eventAttendees.filter(a => !a.isPreRegistered)];
+            
+            attendeeList.innerHTML = allAttendees.map(attendee => `
+                <div class="attendee-item" onclick="selectAttendee('${attendee.id}')">
+                    <div class="attendee-info">
+                        <div class="attendee-name">${attendee.name}</div>
+                        <div class="attendee-ticket">${attendee.ticketType || 'Added at event'}</div>
+                    </div>
+                    <div class="check-icon">✓</div>
+                </div>
+            `).join('');
+        }
+        
+        // Filter attendees
+        function filterAttendees() {
+            const search = document.getElementById('attendeeSearch').value.toLowerCase();
+            const attendeeItems = document.querySelectorAll('.attendee-item');
+            
+            attendeeItems.forEach(item => {
+                const name = item.querySelector('.attendee-name').textContent.toLowerCase();
+                if (name.includes(search)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Select attendee for check-in
+        function selectAttendee(attendeeId) {
+            // Clear previous selections
+            document.querySelectorAll('.attendee-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current attendee
+            event.target.closest('.attendee-item').classList.add('selected');
+            
+            // Store selected attendee
+            window.selectedAttendeeId = attendeeId;
+            
+            // Show check-in button
+            document.getElementById('checkinBtn').style.display = 'block';
+        }
+        
+        // Connection Status
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.className = `connection-status ${status}`;
+            
+            switch(status) {
+                case 'connected':
+                    statusEl.innerHTML = '<span class="live-indicator"></span>Live';
+                    break;
+                case 'connecting':
+                    statusEl.innerHTML = '<span class="live-indicator"></span>Connecting...';
+                    break;
+                case 'disconnected':
+                    statusEl.innerHTML = '<span class="live-indicator"></span>Offline Mode';
+                    break;
+            }
+        }
+        
+        // Navigation functions
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+        
+        function showLogin() {
+            showSection('loginSection');
+        }
+        
+        function showAccountCreation() {
+            showSection('accountSection');
+        }
+        
+        // Account creation
+        function createAccount() {
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                business: document.getElementById('business').value,
+                industry: document.getElementById('industry').value,
+                bio: document.getElementById('bio').value,
+                dubaiExperience: document.getElementById('dubaiExperience').value,
+                looking_for: [],
+                photo: document.getElementById('photoPreview').src
+            };
+            
+            // Get selected looking_for items
+            document.querySelectorAll('input[name="looking_for"]:checked').forEach(checkbox => {
+                formData.looking_for.push(checkbox.value);
+            });
+            
+            // Validate required fields
+            if (!formData.fullName || !formData.email || !formData.business || !formData.industry || !formData.dubaiExperience) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Create user object
+            currentUser = {
+                id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                ...formData,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save user to Firebase
+            saveUserToFirebase(currentUser);
+            
+            // Add to local state
+            allUsers.push(currentUser);
+            
+            // Go to check-in
+            showSection('checkinSection');
+        }
+        
+        // Login user
+        function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+            
+            // For demo purposes, we'll simulate login
+            // In real app, you'd check against Firebase
+            const existingUser = allUsers.find(user => user.email === email);
+            
+            if (existingUser) {
+                currentUser = existingUser;
+                showSection('checkinSection');
+            } else {
+                alert('Account not found. Please create a new account.');
+                showAccountCreation();
+            }
+        }
+        
+        // Add new attendee
+        function addNewAttendee() {
+            if (!currentUser) {
+                alert('Please create an account first');
+                return;
+            }
+            
+            const newAttendee = {
+                id: currentUser.id,
+                name: currentUser.fullName,
+                ticketType: 'Added at event',
+                isPreRegistered: false
+            };
+            
+            eventAttendees.push(newAttendee);
+            renderAttendeeList();
+            
+            // Auto-select the new attendee
+            setTimeout(() => {
+                const newItem = document.querySelector(`[onclick="selectAttendee('${newAttendee.id}')"]`);
+                if (newItem) {
+                    newItem.click();
+                }
+            }, 100);
+        }
+        
+        // Check in to event
+        function checkInToEvent() {
+            if (!window.selectedAttendeeId) {
+                alert('Please select your name from the list');
+                return;
+            }
+            
+            // Add user to checked-in list
+            const checkedInUser = {
+                ...currentUser,
+                checkedInAt: new Date().toISOString(),
+                attendeeId: window.selectedAttendeeId
+            };
+            
+            checkedInUsers.push(checkedInUser);
+            saveCheckedInUserToFirebase(checkedInUser);
+            
+            // Update count
+            updateCheckedInCount();
+            
+            // Go to swipe interface
+            showSection('swipeInterface');
+            loadProfiles();
+        }
+        
+        // Update checked-in count
+        function updateCheckedInCount() {
+            document.getElementById('checkedInCount').textContent = `${checkedInUsers.length} people checked in`;
+        }
+        
+        // Checkbox toggle
         function toggleCheckbox(id) {
             const checkbox = document.getElementById(id);
             const item = checkbox.parentElement;
@@ -760,6 +1279,58 @@
             }
         }
         
+        // Firebase functions
+        function saveUserToFirebase(user) {
+            if (!isFirebaseAvailable) return;
+            database.ref('users/' + user.id).set(user);
+        }
+        
+        function saveCheckedInUserToFirebase(user) {
+            if (!isFirebaseAvailable) return;
+            database.ref('checkedInUsers/' + user.id).set(user);
+        }
+        
+        function saveSwipeToFirebase(userId, targetId, isLike) {
+            if (!isFirebaseAvailable) return;
+            database.ref(`swipes/${userId}/${targetId}`).set(isLike);
+        }
+        
+        function saveMatchToFirebase(match) {
+            if (!isFirebaseAvailable) return;
+            const matchId = `${match.user1.id}_${match.user2.id}`;
+            database.ref('matches/' + matchId).set(match);
+        }
+        
+        // Real-time listeners
+        function setupRealtimeListeners() {
+            if (!isFirebaseAvailable) return;
+            
+            // Listen for checked-in users
+            database.ref('checkedInUsers').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    checkedInUsers = Object.values(data);
+                    updateCheckedInCount();
+                }
+            });
+            
+            // Listen for swipes
+            database.ref('swipes').on('value', (snapshot) => {
+                const data = snapshot.val();
+                swipes = data || {};
+            });
+            
+            // Listen for matches
+            database.ref('matches').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    matches = Object.values(data);
+                    updateMatches();
+                }
+            });
+        }
+        
+        // Swipe interface functions (same as before but with checked-in users)
         function getInitials(name) {
             return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
         }
@@ -771,8 +1342,13 @@
             
             return `
                 <div class="profile-card" data-user-id="${profile.id}">
-                    <div class="profile-avatar">${getInitials(profile.name)}</div>
-                    <div class="profile-name">${profile.name}</div>
+                    <div class="profile-avatar">
+                        ${profile.photo && profile.photo !== 'undefined' ? 
+                            `<img src="${profile.photo}" alt="${profile.fullName}">` : 
+                            getInitials(profile.fullName || profile.name)
+                        }
+                    </div>
+                    <div class="profile-name">${profile.fullName || profile.name}</div>
                     <div class="profile-business">${profile.business}</div>
                     <div class="profile-details">
                         <div class="profile-detail-row">
@@ -781,12 +1357,17 @@
                         </div>
                         <div class="profile-detail-row">
                             <span class="profile-detail-label">In Dubai:</span>
-                            <span>${profile.dubai_experience}</span>
+                            <span>${profile.dubaiExperience}</span>
                         </div>
                         <div class="profile-detail-row">
                             <span class="profile-detail-label">Looking for:</span>
                             <span>${lookingForText}</span>
                         </div>
+                        ${profile.bio ? `
+                            <div style="margin-top: 12px; font-style: italic; color: #999;">
+                                "${profile.bio}"
+                            </div>
+                        ` : ''}
                     </div>
                     ${profile.looking_for && profile.looking_for.length > 0 ? `
                         <div class="profile-tags">
@@ -799,9 +1380,9 @@
         
         function loadProfiles() {
             const cardStack = document.getElementById('cardStack');
-            const otherAttendees = attendees.filter(a => a.id !== currentUser.id);
+            const otherUsers = checkedInUsers.filter(user => user.id !== currentUser.id);
             
-            profileCards = otherAttendees;
+            profileCards = otherUsers;
             document.getElementById('totalCards').textContent = profileCards.length;
             
             if (profileCards.length === 0) {
@@ -817,11 +1398,10 @@
             
             currentCardIndex = 0;
             updateCounter();
-            
-            // Add touch/mouse events to top card
             addSwipeEvents();
         }
         
+        // Rest of swipe functions (same as before)
         function addSwipeEvents() {
             const topCard = document.querySelector('.profile-card');
             if (!topCard) return;
@@ -829,14 +1409,10 @@
             let isDragging = false;
             let startX = 0;
             let currentX = 0;
-            let cardRect = topCard.getBoundingClientRect();
             
-            // Mouse events
             topCard.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
-            
-            // Touch events
             topCard.addEventListener('touchstart', startDrag);
             document.addEventListener('touchmove', drag);
             document.addEventListener('touchend', endDrag);
@@ -845,7 +1421,6 @@
                 isDragging = true;
                 startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
                 topCard.classList.add('dragging');
-                cardRect = topCard.getBoundingClientRect();
             }
             
             function drag(e) {
@@ -857,7 +1432,6 @@
                 
                 topCard.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
                 
-                // Visual feedback
                 if (Math.abs(currentX) > 50) {
                     topCard.style.borderColor = currentX > 0 ? '#6dd4ec' : '#000000';
                     topCard.style.borderWidth = '3px';
@@ -874,14 +1448,12 @@
                 topCard.style.borderColor = 'transparent';
                 
                 if (Math.abs(currentX) > 100) {
-                    // Swipe detected
                     if (currentX > 0) {
                         swipeRight();
                     } else {
                         swipeLeft();
                     }
                 } else {
-                    // Snap back
                     topCard.style.transform = '';
                 }
                 
@@ -897,9 +1469,7 @@
             recordSwipe(userId, false);
             
             topCard.classList.add('swiped-left');
-            setTimeout(() => {
-                nextCard();
-            }, 300);
+            setTimeout(nextCard, 300);
         }
         
         function swipeRight() {
@@ -910,9 +1480,7 @@
             recordSwipe(userId, true);
             
             topCard.classList.add('swiped-right');
-            setTimeout(() => {
-                nextCard();
-            }, 300);
+            setTimeout(nextCard, 300);
         }
         
         function recordSwipe(userId, isLike) {
@@ -921,31 +1489,23 @@
             }
             swipes[currentUser.id][userId] = isLike;
             
+            saveSwipeToFirebase(currentUser.id, userId, isLike);
+            
             // Check for match
             if (isLike && swipes[userId] && swipes[userId][currentUser.id]) {
-                // It's a match!
-                const matchedUser = attendees.find(a => a.id === userId);
-                matches.push({
+                const matchedUser = checkedInUsers.find(u => u.id === userId);
+                const match = {
                     user1: currentUser,
                     user2: matchedUser,
-                    timestamp: new Date()
-                });
+                    timestamp: new Date().toISOString(),
+                    id: `${currentUser.id}_${userId}`
+                };
                 
+                matches.push(match);
+                saveMatchToFirebase(match);
                 showMatchNotification();
                 updateMatches();
             }
-            
-            // Save to localStorage
-            localStorage.setItem('prolink_swipes', JSON.stringify(swipes));
-            localStorage.setItem('prolink_matches', JSON.stringify(matches));
-        }
-        
-        function showMatchNotification() {
-            const notification = document.getElementById('matchNotification');
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
         }
         
         function nextCard() {
@@ -955,30 +1515,34 @@
             const cardStack = document.getElementById('cardStack');
             const cards = cardStack.querySelectorAll('.profile-card');
             
-            // Remove the top card
             if (cards[0]) {
                 cards[0].remove();
             }
             
-            // Add new card to bottom if available
             if (currentCardIndex + 2 < profileCards.length) {
                 const newCard = createProfileCard(profileCards[currentCardIndex + 2]);
                 cardStack.innerHTML += newCard;
             }
             
-            // Check if done
             if (currentCardIndex >= profileCards.length) {
                 document.getElementById('noMoreCards').style.display = 'block';
                 document.querySelector('.swipe-buttons').style.display = 'none';
                 return;
             }
             
-            // Add events to new top card
             setTimeout(addSwipeEvents, 50);
         }
         
         function updateCounter() {
             document.getElementById('currentCard').textContent = Math.min(currentCardIndex + 1, profileCards.length);
+        }
+        
+        function showMatchNotification() {
+            const notification = document.getElementById('matchNotification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
         }
         
         function updateMatches() {
@@ -999,7 +1563,7 @@
                     const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
                     return `
                         <div class="match-card">
-                            <div class="match-name">${otherUser.name}</div>
+                            <div class="match-name">${otherUser.fullName || otherUser.name}</div>
                             <div class="match-details">${otherUser.business} • ${otherUser.industry}</div>
                             ${otherUser.email ? `<div class="match-details">📧 ${otherUser.email}</div>` : ''}
                         </div>
@@ -1008,50 +1572,6 @@
                 
                 matchesSection.style.display = 'block';
             }
-        }
-        
-        // Form submission
-        document.getElementById('networkingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            currentUser = {
-                id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                name: formData.get('name'),
-                email: formData.get('email'),
-                business: formData.get('business'),
-                industry: formData.get('industry'),
-                looking_for: formData.getAll('looking_for'),
-                dubai_experience: formData.get('dubai_experience'),
-                timestamp: new Date()
-            };
-            
-            // Add to attendees
-            attendees.push(currentUser);
-            localStorage.setItem('prolink_attendees', JSON.stringify(attendees));
-            
-            // Switch to swipe interface
-            document.getElementById('registrationForm').style.display = 'none';
-            document.getElementById('swipeInterface').style.display = 'block';
-            
-            loadProfiles();
-            updateMatches();
-        });
-        
-        // Load existing data
-        const storedAttendees = localStorage.getItem('prolink_attendees');
-        if (storedAttendees) {
-            attendees = JSON.parse(storedAttendees);
-        }
-        
-        const storedSwipes = localStorage.getItem('prolink_swipes');
-        if (storedSwipes) {
-            swipes = JSON.parse(storedSwipes);
-        }
-        
-        const storedMatches = localStorage.getItem('prolink_matches');
-        if (storedMatches) {
-            matches = JSON.parse(storedMatches);
         }
     </script>
 </body>
