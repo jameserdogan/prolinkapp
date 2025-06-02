@@ -8,6 +8,7 @@
     
     <!-- Firebase SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.17.1/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.17.1/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.17.1/firebase-database-compat.min.js"></script>
     
     <style>
@@ -313,6 +314,74 @@
             from { transform: translateX(-50%) translateY(-100%); }
             to { transform: translateX(-50%) translateY(0); }
         }
+        
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 8px;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        
+        .strength-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .strength-weak .strength-bar::after {
+            width: 33%;
+            background: #ff4757;
+        }
+        
+        .strength-medium .strength-bar::after {
+            width: 66%;
+            background: #ffa502;
+        }
+        
+        .strength-strong .strength-bar::after {
+            width: 100%;
+            background: #2ed573;
+        }
+        
+        .strength-text {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .strength-weak .strength-text {
+            color: #ff4757;
+        }
+        
+        .strength-medium .strength-text {
+            color: #ffa502;
+        }
+        
+        .strength-strong .strength-text {
+            color: #2ed573;
+        }
+        
+        .btn-link {
+            background: none !important;
+            border: none !important;
+            color: #6dd4ec !important;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+        }
+        
+        .btn-link:hover {
+            color: #5bc4da !important;
+        }
     </style>
 </head>
 <body>
@@ -358,6 +427,25 @@
                 </div>
                 
                 <div class="input-group">
+                    <label>Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="signupPassword" placeholder="Create a secure password" required>
+                        <button type="button" onclick="togglePassword('signupPassword')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px;">👁️</button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength" style="display: none; margin-top: 8px;">
+                        <div class="strength-bar" id="strengthBar"></div>
+                        <div class="strength-text" id="strengthText"></div>
+                    </div>
+                    <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                </div>
+                
+                <div class="input-group">
                     <label>Business/Company (Optional)</label>
                     <input type="text" id="signupBusiness" placeholder="Your company or role">
                 </div>
@@ -378,7 +466,20 @@
                     <div class="error-message" id="loginEmailError">Please enter a valid email address</div>
                 </div>
                 
+                <div class="input-group">
+                    <label>Password</label>
+                    <div style="position: relative;">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <button type="button" onclick="togglePassword('loginPassword')" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px;">👁️</button>
+                    </div>
+                    <div class="error-message" id="loginPasswordError">Please enter your password</div>
+                </div>
+                
                 <button type="submit" class="btn" id="loginBtn">LOGIN</button>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                    <button type="button" class="btn-link" onclick="showForgotPassword()" style="background: none; border: none; color: #6dd4ec; text-decoration: underline; cursor: pointer; font-size: 14px;">Forgot your password?</button>
+                </div>
             </form>
             <button class="btn btn-secondary" onclick="goBack()">BACK</button>
         </div>
@@ -392,6 +493,10 @@
                 
                 <button class="btn" onclick="joinEvent()">JOIN TONIGHT'S EVENT</button>
                 <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                    <button type="button" class="btn-link" onclick="signOut()" style="color: #999; text-decoration: none; font-size: 12px;">Sign Out</button>
+                </div>
             </div>
         </div>
         
@@ -470,13 +575,28 @@
         
         // Initialize Firebase
         let database;
+        let auth;
         let isFirebaseAvailable = false;
         
         try {
             firebase.initializeApp(firebaseConfig);
             database = firebase.database();
+            auth = firebase.auth();
             isFirebaseAvailable = true;
             console.log('Firebase initialized successfully');
+            
+            // Listen for authentication state changes
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('User is signed in:', user.email);
+                    // Load user profile data
+                    loadUserProfile(user);
+                } else {
+                    console.log('User is signed out');
+                    currentUser = null;
+                }
+            });
+            
         } catch (error) {
             console.log('Firebase not available, using local storage fallback');
             isFirebaseAvailable = false;
@@ -570,6 +690,116 @@
             error.style.display = 'none';
         }
         
+        // Password Functions
+        function validatePassword(password) {
+            return {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+        }
+        
+        function getPasswordStrength(password) {
+            const checks = validatePassword(password);
+            const score = Object.values(checks).filter(Boolean).length;
+            
+            if (score < 3) return 'weak';
+            if (score < 5) return 'medium';
+            return 'strong';
+        }
+        
+        function updatePasswordStrength(password) {
+            const strengthContainer = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (password.length === 0) {
+                strengthContainer.style.display = 'none';
+                return;
+            }
+            
+            strengthContainer.style.display = 'block';
+            
+            const checks = validatePassword(password);
+            const strength = getPasswordStrength(password);
+            
+            // Clear previous strength classes
+            strengthContainer.className = 'password-strength';
+            strengthContainer.classList.add(`strength-${strength}`);
+            
+            let requirements = [];
+            if (!checks.length) requirements.push('8+ characters');
+            if (!checks.uppercase) requirements.push('uppercase letter');
+            if (!checks.lowercase) requirements.push('lowercase letter');
+            if (!checks.number) requirements.push('number');
+            if (!checks.special) requirements.push('special character');
+            
+            if (strength === 'weak') {
+                strengthText.textContent = `Weak - Add: ${requirements.slice(0, 2).join(', ')}`;
+            } else if (strength === 'medium') {
+                strengthText.textContent = 'Medium - Good, but could be stronger';
+            } else {
+                strengthText.textContent = 'Strong - Great password!';
+            }
+        }
+        
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        // User Profile Management
+        async function loadUserProfile(firebaseUser) {
+            if (!firebaseUser) return;
+            
+            try {
+                // Get user profile from database
+                const snapshot = await database.ref('userProfiles/' + firebaseUser.uid).once('value');
+                const profile = snapshot.val();
+                
+                currentUser = {
+                    id: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    fullName: profile?.fullName || firebaseUser.displayName || '',
+                    business: profile?.business || 'Entrepreneur',
+                    timestamp: profile?.timestamp || new Date().toISOString(),
+                    emailVerified: firebaseUser.emailVerified
+                };
+                
+                console.log('User profile loaded:', currentUser);
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+            }
+        }
+        
+        async function saveUserProfile(profileData) {
+            if (!auth.currentUser) return;
+            
+            try {
+                const userProfile = {
+                    fullName: profileData.fullName,
+                    business: profileData.business,
+                    timestamp: profileData.timestamp,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                await database.ref('userProfiles/' + auth.currentUser.uid).set(userProfile);
+                console.log('User profile saved');
+            } catch (error) {
+                console.error('Error saving user profile:', error);
+                throw error;
+            }
+        }
+        
         // Screen Navigation
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
@@ -581,6 +811,25 @@
         function showCreateAccount() {
             showScreen('createAccountScreen');
             document.getElementById('signupEmail').focus();
+            
+            // Add password strength checking
+            const passwordInput = document.getElementById('signupPassword');
+            passwordInput.addEventListener('input', function() {
+                updatePasswordStrength(this.value);
+            });
+            
+            // Add confirm password validation
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            confirmPasswordInput.addEventListener('input', function() {
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                } else {
+                    clearError('confirmPassword', 'confirmPasswordError');
+                }
+            });
         }
         
         function showLogin() {
@@ -601,16 +850,20 @@
         }
         
         // Account Functions
-        function createAccount(event) {
+        async function createAccount(event) {
             event.preventDefault();
             
             const email = document.getElementById('signupEmail').value.trim();
             const name = document.getElementById('signupName').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             const business = document.getElementById('signupBusiness').value.trim();
             
             // Clear previous errors
             clearError('signupEmail', 'emailError');
             clearError('signupName', 'nameError');
+            clearError('signupPassword', 'passwordError');
+            clearError('confirmPassword', 'confirmPasswordError');
             
             let hasError = false;
             
@@ -626,87 +879,234 @@
                 hasError = true;
             }
             
+            // Validate password
+            const passwordChecks = validatePassword(password);
+            if (!password || password.length < 8) {
+                showError('signupPassword', 'passwordError', 'Password must be at least 8 characters long');
+                hasError = true;
+            } else if (!passwordChecks.uppercase || !passwordChecks.lowercase || !passwordChecks.number) {
+                showError('signupPassword', 'passwordError', 'Password must contain uppercase, lowercase, and number');
+                hasError = true;
+            }
+            
+            // Validate confirm password
+            if (password !== confirmPassword) {
+                showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                hasError = true;
+            }
+            
             if (hasError) return;
             
             setButtonLoading('createAccountBtn', true);
             
-            // Check if user already exists
-            const existingUser = allUsers.find(user => user.email === email);
-            if (existingUser) {
-                setButtonLoading('createAccountBtn', false);
-                showNotification('Account with this email already exists. Please login instead.', true);
-                setTimeout(() => showLogin(), 2000);
-                return;
-            }
-            
-            // Create user
-            currentUser = {
-                id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                email: email,
-                fullName: name,
-                business: business || 'Entrepreneur',
-                timestamp: new Date().toISOString()
-            };
-            
-            // Save user
             try {
                 if (isFirebaseAvailable) {
-                    database.ref('users/' + currentUser.id).set(currentUser).then(() => {
-                        setButtonLoading('createAccountBtn', false);
-                        allUsers.push(currentUser);
-                        showNotification('Account created successfully!');
-                        document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`;
-                        showScreen('successScreen');
-                    }).catch((error) => {
-                        setButtonLoading('createAccountBtn', false);
-                        showNotification('Error creating account. Please try again.', true);
-                        console.error('Firebase error:', error);
+                    // Create user with Firebase Auth
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const firebaseUser = userCredential.user;
+                    
+                    // Update display name
+                    await firebaseUser.updateProfile({
+                        displayName: name
                     });
+                    
+                    // Save additional profile data
+                    const profileData = {
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    await saveUserProfile(profileData);
+                    
+                    // Send email verification
+                    await firebaseUser.sendEmailVerification({
+                        url: window.location.href // Return to this page after verification
+                    });
+                    
+                    setButtonLoading('createAccountBtn', false);
+                    showNotification('Account created! Please check your email to verify your account.');
+                    
+                    // Update current user
+                    currentUser = {
+                        id: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        timestamp: new Date().toISOString(),
+                        emailVerified: firebaseUser.emailVerified
+                    };
+                    
+                    document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! Please verify your email, then join tonight's networking event.`;
+                    showScreen('successScreen');
+                    
                 } else {
-                    // Local storage fallback
+                    // Local storage fallback (for development only)
+                    const existingUser = allUsers.find(user => user.email === email);
+                    if (existingUser) {
+                        setButtonLoading('createAccountBtn', false);
+                        showNotification('Account with this email already exists. Please login instead.', true);
+                        setTimeout(() => showLogin(), 2000);
+                        return;
+                    }
+                    
+                    currentUser = {
+                        id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        email: email,
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        timestamp: new Date().toISOString(),
+                        emailVerified: false
+                    };
+                    
                     allUsers.push(currentUser);
                     setButtonLoading('createAccountBtn', false);
-                    showNotification('Account created successfully!');
+                    showNotification('Account created successfully! (Development mode)');
                     document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`;
                     showScreen('successScreen');
                 }
             } catch (error) {
                 setButtonLoading('createAccountBtn', false);
-                showNotification('Error creating account. Please try again.', true);
-                console.error('Error:', error);
+                console.error('Account creation error:', error);
+                
+                // Handle specific Firebase Auth errors
+                if (error.code === 'auth/email-already-in-use') {
+                    showError('signupEmail', 'emailError', 'An account with this email already exists');
+                    showNotification('Account with this email already exists. Please login instead.', true);
+                } else if (error.code === 'auth/weak-password') {
+                    showError('signupPassword', 'passwordError', 'Password is too weak');
+                } else if (error.code === 'auth/invalid-email') {
+                    showError('signupEmail', 'emailError', 'Invalid email address');
+                } else {
+                    showNotification('Error creating account. Please try again.', true);
+                }
             }
         }
         
-        function loginUser(event) {
+        async function loginUser(event) {
             event.preventDefault();
             
             const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
             clearError('loginEmail', 'loginEmailError');
+            clearError('loginPassword', 'loginPasswordError');
+            
+            let hasError = false;
             
             if (!email || !validateEmail(email)) {
                 showError('loginEmail', 'loginEmailError', 'Please enter a valid email address');
-                return;
+                hasError = true;
             }
+            
+            if (!password) {
+                showError('loginPassword', 'loginPasswordError', 'Please enter your password');
+                hasError = true;
+            }
+            
+            if (hasError) return;
             
             setButtonLoading('loginBtn', true);
             
-            // Find existing user
-            const existingUser = allUsers.find(user => user.email === email);
-            
-            setTimeout(() => { // Simulate network delay
-                setButtonLoading('loginBtn', false);
-                
-                if (existingUser) {
-                    currentUser = existingUser;
+            try {
+                if (isFirebaseAvailable) {
+                    // Sign in with Firebase Auth
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    const firebaseUser = userCredential.user;
+                    
+                    // Load user profile
+                    await loadUserProfile(firebaseUser);
+                    
+                    setButtonLoading('loginBtn', false);
                     showNotification('Login successful!');
-                    document.getElementById('welcomeMessage').textContent = `Welcome back ${currentUser.fullName}!`;
+                    
+                    const welcomeMessage = currentUser.emailVerified 
+                        ? `Welcome back ${currentUser.fullName}!`
+                        : `Welcome back ${currentUser.fullName}! Please verify your email for full access.`;
+                    
+                    document.getElementById('welcomeMessage').textContent = welcomeMessage;
                     showScreen('successScreen');
+                    
                 } else {
-                    showNotification('Account not found. Please create a new account.', true);
-                    setTimeout(() => showCreateAccount(), 2000);
+                    // Local storage fallback
+                    const existingUser = allUsers.find(user => user.email === email);
+                    
+                    setTimeout(() => {
+                        setButtonLoading('loginBtn', false);
+                        
+                        if (existingUser) {
+                            currentUser = existingUser;
+                            showNotification('Login successful! (Development mode)');
+                            document.getElementById('welcomeMessage').textContent = `Welcome back ${currentUser.fullName}!`;
+                            showScreen('successScreen');
+                        } else {
+                            showNotification('Account not found. Please create a new account.', true);
+                            setTimeout(() => showCreateAccount(), 2000);
+                        }
+                    }, 1000);
                 }
-            }, 1000);
+                
+            } catch (error) {
+                setButtonLoading('loginBtn', false);
+                console.error('Login error:', error);
+                
+                // Handle specific Firebase Auth errors
+                if (error.code === 'auth/user-not-found') {
+                    showError('loginEmail', 'loginEmailError', 'No account found with this email');
+                    showNotification('Account not found. Please create a new account.', true);
+                } else if (error.code === 'auth/wrong-password') {
+                    showError('loginPassword', 'loginPasswordError', 'Incorrect password');
+                    showNotification('Incorrect password. Please try again.', true);
+                } else if (error.code === 'auth/invalid-email') {
+                    showError('loginEmail', 'loginEmailError', 'Invalid email address');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showNotification('Too many failed attempts. Please try again later.', true);
+                } else {
+                    showNotification('Login error. Please try again.', true);
+                }
+            }
+        }
+        
+        async function showForgotPassword() {
+            const email = document.getElementById('loginEmail').value.trim();
+            
+            if (!email || !validateEmail(email)) {
+                showNotification('Please enter your email address first, then click "Forgot password"');
+                document.getElementById('loginEmail').focus();
+                return;
+            }
+            
+            if (!isFirebaseAvailable) {
+                showNotification('Password reset not available in development mode');
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showNotification('Password reset email sent! Check your inbox.');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                
+                if (error.code === 'auth/user-not-found') {
+                    showNotification('No account found with this email address', true);
+                } else {
+                    showNotification('Error sending password reset email. Please try again.', true);
+                }
+            }
+        }
+        
+        async function signOut() {
+            try {
+                if (isFirebaseAvailable) {
+                    await auth.signOut();
+                }
+                currentUser = null;
+                showNotification('Signed out successfully');
+                showScreen('welcomeScreen');
+            } catch (error) {
+                console.error('Sign out error:', error);
+                showNotification('Error signing out', true);
+            }
         }
         
         function joinEvent() {
@@ -1189,16 +1589,15 @@
                 }
             });
             
-            // Add form validation on input
-            const inputs = document.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    const errorElement = this.parentNode.querySelector('.error-message');
+            // Add form validation on input for all inputs
+            document.addEventListener('input', function(e) {
+                if (e.target.tagName === 'INPUT') {
+                    const errorElement = e.target.parentNode.querySelector('.error-message');
                     if (errorElement && errorElement.style.display === 'block') {
-                        this.classList.remove('input-error');
+                        e.target.classList.remove('input-error');
                         errorElement.style.display = 'none';
                     }
-                });
+                }
             });
         });
     </script>
