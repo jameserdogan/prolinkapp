@@ -94,6 +94,456 @@
             display: block;
         }
         
+        /* Dashboard Navigation */
+        .dashboard-nav {
+            display: none;
+            background: rgba(240, 240, 240, 0.9);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-nav.active {
+            display: block;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        
+        .nav-tab {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333333;
+        }
+        
+        .nav-tab.active {
+            background: #6dd4ec;
+            color: #000000;
+            font-weight: 600;
+        }
+        
+        .nav-tab-icon {
+            font-size: 16px;
+        }
+        
+        /* Dashboard sections */
+        .dashboard-section {
+            display: none;
+        }
+        
+        .dashboard-section.active {
+            display: block;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+        }
+        
+        .dashboard-subtitle {
+            color: #666666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        /* Profile Dashboard */
+        .profile-summary {
+            background: linear-gradient(135deg, #6dd4ec 0%, #5bc4da 100%);
+            color: #000000;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .profile-summary-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            overflow: hidden;
+        }
+        
+        .profile-summary-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .profile-summary-info {
+            flex: 1;
+        }
+        
+        .profile-summary-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .profile-summary-business {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: #6dd4ec;
+            transform: translateY(-2px);
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #6dd4ec;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #666666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Events Dashboard */
+        .event-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #6dd4ec;
+            transition: all 0.3s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .event-card.current {
+            border-left-color: #6dd4ec;
+            background: linear-gradient(135deg, rgba(109, 212, 236, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+        }
+        
+        .event-card.past {
+            border-left-color: #999999;
+            opacity: 0.8;
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .event-title {
+            font-weight: 600;
+            color: #000000;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .event-date {
+            color: #666666;
+            font-size: 12px;
+        }
+        
+        .event-status {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .event-status.live {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .event-status.upcoming {
+            background: #ffd700;
+            color: #000000;
+        }
+        
+        .event-status.completed {
+            background: #999999;
+            color: #ffffff;
+        }
+        
+        .event-details {
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .event-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .event-btn.primary {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .event-btn.secondary {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000000;
+        }
+        
+        .event-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Matches Dashboard */
+        .matches-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .match-card-enhanced {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #6dd4ec;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .match-card-enhanced:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .match-avatar {
+            width: 50px;
+            height: 50px;
+            background: #6dd4ec;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #000000;
+            overflow: hidden;
+        }
+        
+        .match-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .match-info {
+            flex: 1;
+        }
+        
+        .match-name-enhanced {
+            font-weight: 600;
+            color: #000000;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .match-details-enhanced {
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .match-event {
+            color: #6dd4ec;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .match-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .match-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .match-action-btn.message {
+            background: #6dd4ec;
+            color: #000000;
+        }
+        
+        .match-action-btn.connect {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000000;
+        }
+        
+        /* Settings Dashboard */
+        .settings-group {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .settings-group h4 {
+            color: #000000;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-label {
+            color: #333333;
+            font-weight: 500;
+        }
+        
+        .settings-value {
+            color: #666666;
+            font-size: 14px;
+        }
+        
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: #6dd4ec;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+        
+        /* Empty states */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #666666;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
         .form-section {
             margin-bottom: 28px;
         }
@@ -873,6 +1323,225 @@
             </div>
         </div>
         
+        <!-- Dashboard Navigation -->
+        <div id="dashboardNav" class="dashboard-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showDashboardSection('profile')">
+                    <span class="nav-tab-icon">👤</span>
+                    Profile
+                </button>
+                <button class="nav-tab" onclick="showDashboardSection('events')">
+                    <span class="nav-tab-icon">📅</span>
+                    Events
+                </button>
+                <button class="nav-tab" onclick="showDashboardSection('matches')">
+                    <span class="nav-tab-icon">🔥</span>
+                    Matches
+                </button>
+                <button class="nav-tab" onclick="showDashboardSection('networking')">
+                    <span class="nav-tab-icon">🎯</span>
+                    Network
+                </button>
+                <button class="nav-tab" onclick="showDashboardSection('settings')">
+                    <span class="nav-tab-icon">⚙️</span>
+                    Settings
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dashboard - Profile Section -->
+        <div id="dashboardProfile" class="section dashboard-section active">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Profile</div>
+                    <div class="dashboard-subtitle">Manage your networking profile</div>
+                </div>
+            </div>
+            
+            <div class="profile-summary" id="profileSummary">
+                <div class="profile-summary-avatar" id="dashboardAvatar">
+                    👤
+                </div>
+                <div class="profile-summary-info">
+                    <div class="profile-summary-name" id="dashboardName">Your Name</div>
+                    <div class="profile-summary-business" id="dashboardBusiness">Your Business</div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalMatches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="eventsAttended">0</div>
+                    <div class="stat-label">Events Attended</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="editProfile()">EDIT PROFILE</button>
+        </div>
+        
+        <!-- Dashboard - Events Section -->
+        <div id="dashboardEvents" class="section dashboard-section">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Events</div>
+                    <div class="dashboard-subtitle">Your ProLink event history</div>
+                </div>
+            </div>
+            
+            <div id="eventsContainer">
+                <!-- Current Event -->
+                <div class="event-card current">
+                    <div class="event-header">
+                        <div>
+                            <div class="event-title">Expat Entrepreneurs Meetup DXB</div>
+                            <div class="event-date">Monday, June 2, 2025 • 7:00 PM</div>
+                        </div>
+                        <div class="event-status live">LIVE</div>
+                    </div>
+                    <div class="event-details">
+                        📍 Lock, Stock & Barrel JBR - The Walk<br>
+                        🎯 Launch, Grow & Connect in Dubai
+                    </div>
+                    <div class="event-actions">
+                        <button class="event-btn primary" onclick="joinNetworking()">JOIN NETWORKING</button>
+                        <button class="event-btn secondary" onclick="viewEventDetails()">VIEW DETAILS</button>
+                    </div>
+                </div>
+                
+                <!-- Future Events Placeholder -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-title">More Events Coming Soon</div>
+                    <div class="empty-state-text">We're planning more amazing networking events in Dubai. Stay tuned!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard - Matches Section -->
+        <div id="dashboardMatches" class="section dashboard-section">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Matches</div>
+                    <div class="dashboard-subtitle">Your networking connections</div>
+                </div>
+            </div>
+            
+            <div class="matches-grid" id="matchesGrid">
+                <!-- Matches will be populated here -->
+            </div>
+            
+            <div id="noMatchesState" class="empty-state">
+                <div class="empty-state-icon">🔥</div>
+                <div class="empty-state-title">No Matches Yet</div>
+                <div class="empty-state-text">Start networking at events to find your perfect connections!</div>
+            </div>
+        </div>
+        
+        <!-- Dashboard - Networking Section -->
+        <div id="dashboardNetworking" class="section dashboard-section">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Network</div>
+                    <div class="dashboard-subtitle">Discover and connect</div>
+                </div>
+            </div>
+            
+            <div class="event-info">
+                <div class="event-title">Expat Entrepreneurs Meetup DXB</div>
+                <div class="event-details">
+                    📅 Monday, June 2, 2025 • 7:00 PM - 9:00 PM<br>
+                    📍 Lock, Stock & Barrel JBR - The Walk<br>
+                    🎯 Launch, Grow & Connect in Dubai
+                </div>
+                <div class="checked-in-count" id="dashboardCheckedInCount">0 people checked in</div>
+            </div>
+            
+            <div class="swipe-header">
+                <h3 class="swipe-title">Find Your Connections</h3>
+                <div class="swipe-counter">
+                    <span id="dashboardCurrentCard">1</span> of <span id="dashboardTotalCards">0</span>
+                </div>
+            </div>
+            
+            <div class="card-stack" id="dashboardCardStack">
+                <!-- Profile cards will be generated here -->
+            </div>
+            
+            <div class="swipe-buttons">
+                <button class="swipe-btn pass-btn" onclick="swipeLeft()">✕</button>
+                <button class="swipe-btn like-btn" onclick="swipeRight()">❤</button>
+            </div>
+            
+            <div class="no-more-cards" id="dashboardNoMoreCards">
+                <h3 class="no-more-title">All done! 🎉</h3>
+                <p>Check your matches and start networking!</p>
+            </div>
+        </div>
+        
+        <!-- Dashboard - Settings Section -->
+        <div id="dashboardSettings" class="section dashboard-section">
+            <div class="dashboard-header">
+                <div>
+                    <div class="dashboard-title">Settings</div>
+                    <div class="dashboard-subtitle">Manage your account preferences</div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <h4>
+                    <span>🔔</span>
+                    Notifications
+                </h4>
+                <div class="settings-item">
+                    <div class="settings-label">New Matches</div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-label">Event Reminders</div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-label">New Events</div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <h4>
+                    <span>🔒</span>
+                    Privacy
+                </h4>
+                <div class="settings-item">
+                    <div class="settings-label">Show Profile in Directory</div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-label">Allow Contact from Matches</div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <h4>
+                    <span>👤</span>
+                    Account
+                </h4>
+                <div class="settings-item">
+                    <div class="settings-label">Email</div>
+                    <div class="settings-value" id="settingsEmail">your@email.com</div>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-label">Member Since</div>
+                    <div class="settings-value" id="memberSince">June 2025</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="signOut()">SIGN OUT</button>
+        </div>
+        
         <!-- Event Check-in Section -->
         <div id="checkinSection" class="section">
             <div class="event-info">
@@ -901,6 +1570,7 @@
                 
                 <button type="button" class="btn" onclick="addNewAttendee()">I'M NOT ON THE LIST - ADD ME</button>
                 <button type="button" class="btn" id="checkinBtn" onclick="checkInToEvent()" style="display: none;">CHECK IN TO EVENT</button>
+                <button type="button" class="btn btn-secondary" onclick="goToDashboard()">GO TO DASHBOARD</button>
             </div>
         </div>
         
@@ -1202,7 +1872,17 @@
             
             if (existingUser) {
                 currentUser = existingUser;
-                showSection('checkinSection');
+                
+                // Check if user is already checked in to current event
+                const isCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
+                
+                if (isCheckedIn) {
+                    // User is already checked in, go to dashboard
+                    showDashboard();
+                } else {
+                    // User needs to check in
+                    showSection('checkinSection');
+                }
             } else {
                 alert('Account not found. Please create a new account.');
                 showAccountCreation();
@@ -1255,9 +1935,236 @@
             // Update count
             updateCheckedInCount();
             
-            // Go to swipe interface
-            showSection('swipeInterface');
-            loadProfiles();
+            // Go to dashboard
+            showDashboard();
+        }
+        
+        // Show dashboard
+        function showDashboard() {
+            // Hide all main sections
+            document.querySelectorAll('.section:not(.dashboard-section)').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show dashboard navigation
+            document.getElementById('dashboardNav').classList.add('active');
+            
+            // Show default dashboard section (profile)
+            showDashboardSection('profile');
+            
+            // Update dashboard data
+            updateDashboardProfile();
+            updateDashboardMatches();
+            updateDashboardNetworking();
+        }
+        
+        // Dashboard navigation
+        function showDashboardSection(sectionName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Find and activate the correct tab
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                if (tab.onclick && tab.onclick.toString().includes(sectionName)) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // If called from onclick event, activate the clicked tab
+            if (event && event.target.closest('.nav-tab')) {
+                event.target.closest('.nav-tab').classList.add('active');
+            }
+            
+            // Update sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(`dashboard${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Load section-specific data
+            switch(sectionName) {
+                case 'profile':
+                    updateDashboardProfile();
+                    break;
+                case 'matches':
+                    updateDashboardMatches();
+                    break;
+                case 'networking':
+                    updateDashboardNetworking();
+                    break;
+                case 'settings':
+                    updateDashboardSettings();
+                    break;
+            }
+        }
+        
+        // Update dashboard profile
+        function updateDashboardProfile() {
+            if (!currentUser) return;
+            
+            // Update profile summary
+            document.getElementById('dashboardName').textContent = currentUser.fullName || currentUser.name;
+            document.getElementById('dashboardBusiness').textContent = currentUser.business;
+            
+            // Update avatar
+            const avatarEl = document.getElementById('dashboardAvatar');
+            if (currentUser.photo && currentUser.photo !== 'undefined') {
+                avatarEl.innerHTML = `<img src="${currentUser.photo}" alt="${currentUser.fullName}">`;
+            } else {
+                avatarEl.textContent = getInitials(currentUser.fullName || currentUser.name);
+            }
+            
+            // Update stats
+            const userMatches = matches.filter(match => 
+                match.user1.id === currentUser.id || match.user2.id === currentUser.id
+            );
+            document.getElementById('totalMatches').textContent = userMatches.length;
+            document.getElementById('eventsAttended').textContent = '1'; // Current event
+        }
+        
+        // Update dashboard matches
+        function updateDashboardMatches() {
+            const matchesGrid = document.getElementById('matchesGrid');
+            const noMatchesState = document.getElementById('noMatchesState');
+            
+            if (matches.length === 0) {
+                matchesGrid.style.display = 'none';
+                noMatchesState.style.display = 'block';
+                return;
+            }
+            
+            const userMatches = matches.filter(match => 
+                match.user1.id === currentUser.id || match.user2.id === currentUser.id
+            );
+            
+            if (userMatches.length === 0) {
+                matchesGrid.style.display = 'none';
+                noMatchesState.style.display = 'block';
+                return;
+            }
+            
+            matchesGrid.style.display = 'grid';
+            noMatchesState.style.display = 'none';
+            
+            matchesGrid.innerHTML = userMatches.map(match => {
+                const otherUser = match.user1.id === currentUser.id ? match.user2 : match.user1;
+                return `
+                    <div class="match-card-enhanced">
+                        <div class="match-avatar">
+                            ${otherUser.photo && otherUser.photo !== 'undefined' ? 
+                                `<img src="${otherUser.photo}" alt="${otherUser.fullName || otherUser.name}">` : 
+                                getInitials(otherUser.fullName || otherUser.name)
+                            }
+                        </div>
+                        <div class="match-info">
+                            <div class="match-name-enhanced">${otherUser.fullName || otherUser.name}</div>
+                            <div class="match-details-enhanced">${otherUser.business} • ${otherUser.industry}</div>
+                            <div class="match-event">Expat Entrepreneurs Meetup</div>
+                        </div>
+                        <div class="match-actions">
+                            <button class="match-action-btn message" onclick="startConversation('${otherUser.id}')">Message</button>
+                            <button class="match-action-btn connect" onclick="connectExternal('${otherUser.id}')">Connect</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update dashboard networking
+        function updateDashboardNetworking() {
+            document.getElementById('dashboardCheckedInCount').textContent = `${checkedInUsers.length} people checked in`;
+            
+            // Load profiles for networking
+            const cardStack = document.getElementById('dashboardCardStack');
+            const otherUsers = checkedInUsers.filter(user => user.id !== currentUser.id);
+            
+            profileCards = otherUsers;
+            document.getElementById('dashboardTotalCards').textContent = profileCards.length;
+            
+            if (profileCards.length === 0) {
+                document.getElementById('dashboardNoMoreCards').style.display = 'block';
+                return;
+            }
+            
+            // Load first 3 cards
+            cardStack.innerHTML = '';
+            for (let i = Math.min(2, profileCards.length - 1); i >= 0; i--) {
+                cardStack.innerHTML += createProfileCard(profileCards[i]);
+            }
+            
+            currentCardIndex = 0;
+            updateDashboardCounter();
+            addSwipeEvents();
+        }
+        
+        // Update dashboard settings
+        function updateDashboardSettings() {
+            if (!currentUser) return;
+            
+            document.getElementById('settingsEmail').textContent = currentUser.email;
+            
+            const memberSince = new Date(currentUser.timestamp).toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            document.getElementById('memberSince').textContent = memberSince;
+        }
+        
+        // Update dashboard counter
+        function updateDashboardCounter() {
+            document.getElementById('dashboardCurrentCard').textContent = Math.min(currentCardIndex + 1, profileCards.length);
+        }
+        
+        // Go to dashboard without checking in
+        function goToDashboard() {
+            showDashboard();
+        }
+        
+        // Dashboard action functions
+        function editProfile() {
+            alert('Edit profile functionality coming soon!');
+        }
+        
+        function joinNetworking() {
+            showDashboardSection('networking');
+        }
+        
+        function viewEventDetails() {
+            alert('Event details:\n\nExpat Entrepreneurs Meetup DXB\nMonday, June 2, 2025 • 7:00 PM - 9:00 PM\nLock, Stock & Barrel JBR - The Walk\n\nLaunch, Grow & Connect in Dubai');
+        }
+        
+        function startConversation(userId) {
+            alert('Messaging feature coming soon! For now, connect with them in person at the event.');
+        }
+        
+        function connectExternal(userId) {
+            const user = checkedInUsers.find(u => u.id === userId);
+            if (user && user.email) {
+                const subject = encodeURIComponent('Great meeting you at ProLink Expat Entrepreneurs Meetup!');
+                const body = encodeURIComponent(`Hi ${user.fullName || user.name},\n\nIt was great connecting with you at the ProLink networking event. I'd love to continue our conversation.\n\nBest regards,\n${currentUser.fullName || currentUser.name}`);
+                window.open(`mailto:${user.email}?subject=${subject}&body=${body}`);
+            } else {
+                alert('Email not available for this contact.');
+            }
+        }
+        
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+        }
+        
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                currentUser = null;
+                showSection('accountSection');
+                document.getElementById('dashboardNav').classList.remove('active');
+            }
         }
         
         // Update checked-in count
@@ -1546,6 +2453,12 @@
         }
         
         function updateMatches() {
+            // Update both regular matches section and dashboard matches
+            updateRegularMatches();
+            updateDashboardMatches();
+        }
+        
+        function updateRegularMatches() {
             const matchesList = document.getElementById('matchesList');
             const matchesSection = document.getElementById('matchesSection');
             
