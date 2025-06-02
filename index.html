@@ -492,7 +492,7 @@
                 <p style="color: #666666; margin-bottom: 24px;" id="welcomeMessage">Welcome to ProLink. You can now join tonight's networking event.</p>
                 
                 <button class="btn" onclick="joinEvent()">JOIN TONIGHT'S EVENT</button>
-                <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
+                <button class="btn btn-secondary" onclick="showScreen('dashboardScreen'); loadDashboardData();">GO TO DASHBOARD</button>
                 
                 <div style="text-align: center; margin-top: 16px;">
                     <button type="button" class="btn-link" onclick="signOut()" style="color: #999; text-decoration: none; font-size: 12px;">Sign Out</button>
@@ -526,7 +526,7 @@
             
             <button class="btn" onclick="addNewAttendee()" id="addAttendeeBtn">I'M NOT ON THE LIST - ADD ME</button>
             <button class="btn" id="checkinBtn" onclick="checkInToEvent()" style="display: none;">CHECK IN TO EVENT</button>
-            <button class="btn btn-secondary" onclick="showDashboard()">BACK TO DASHBOARD</button>
+            <button class="btn btn-secondary" onclick="showScreen('dashboardScreen'); loadDashboardData();">BACK TO DASHBOARD</button>
         </div>
         
         <!-- Networking Screen -->
@@ -556,7 +556,7 @@
                 <div id="matchesList"></div>
             </div>
             
-            <button class="btn btn-secondary" onclick="showDashboard()">GO TO DASHBOARD</button>
+            <button class="btn btn-secondary" onclick="showScreen('dashboardScreen'); loadDashboardData();" style="margin-bottom: 12px;">GO TO DASHBOARD</button>
             <button class="btn" onclick="joinEvent()">BACK TO CHECK-IN</button>
         </div>
     </div>
@@ -842,7 +842,8 @@
         }
         
         function goBackToSuccess() {
-            showDashboard();
+            showScreen('dashboardScreen');
+            loadDashboardData();
         }
         
         function goBackToCheckin() {
@@ -961,7 +962,8 @@
                     document.getElementById('welcomeMessage').textContent = welcomeMessage;
                     
                     // Go directly to dashboard for Tinder-style experience
-                    showDashboard();
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
                     
                 } else {
                     // Local storage fallback (for development only)
@@ -986,7 +988,8 @@
                     setButtonLoading('createAccountBtn', false);
                     showNotification('Account created successfully! (Development mode)');
                     document.getElementById('welcomeMessage').textContent = `Welcome ${currentUser.fullName}! You can now join tonight's networking event.`;
-                    showDashboard();
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
                 }
             } catch (error) {
                 setButtonLoading('createAccountBtn', false);
@@ -1054,7 +1057,8 @@
                     document.getElementById('welcomeMessage').textContent = welcomeMessage;
                     
                     // Go directly to dashboard for Tinder-style experience
-                    showDashboard();
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
                     
                 } else {
                     // Local storage fallback
@@ -1067,7 +1071,8 @@
                             currentUser = existingUser;
                             showNotification('Login successful! (Development mode)');
                             document.getElementById('welcomeMessage').textContent = `Welcome back ${currentUser.fullName}!`;
-                            showDashboard();
+                            showScreen('dashboardScreen');
+                            loadDashboardData();
                         } else {
                             showNotification('Account not found. Please create a new account.', true);
                             setTimeout(() => showCreateAccount(), 2000);
@@ -1136,6 +1141,17 @@
                 console.error('Sign out error:', error);
                 showNotification('Error signing out', true);
             }
+        }
+        
+        function showDashboard() {
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                showCreateAccount();
+                return;
+            }
+            
+            showScreen('dashboardScreen');
+            loadDashboardData();
         }
         
         function joinEvent() {
@@ -1305,7 +1321,8 @@
             const alreadyCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
             if (alreadyCheckedIn) {
                 showNotification('You are already checked in!');
-                showDashboard();
+                showScreen('dashboardScreen');
+                loadDashboardData();
                 return;
             }
             
@@ -1336,7 +1353,8 @@
             
             // Go back to dashboard
             setTimeout(() => {
-                showDashboard();
+                showScreen('dashboardScreen');
+                loadDashboardData();
             }, 1500);
         }
         
