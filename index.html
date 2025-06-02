@@ -87,11 +87,16 @@
         }
         
         .section {
-            display: none;
+            display: none !important;
         }
         
         .section.active {
-            display: block;
+            display: block !important;
+        }
+        
+        /* Force hide old sections */
+        #authSection, #accountSection, #loginSection {
+            display: none !important;
         }
         
         /* Dashboard Navigation */
@@ -1703,6 +1708,12 @@
         
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
+            // Force show welcome screen first
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById('welcomeScreen').style.display = 'block';
+            
             setupPhotoUpload();
             setupRealtimeListeners();
             loadPreRegisteredAttendees();
@@ -2371,12 +2382,13 @@
             if (confirm('Are you sure you want to sign out?')) {
                 currentUser = null;
                 window.tempUser = null;
-                showSection('authSection');
+                showSection('welcomeScreen');
                 document.getElementById('dashboardNav').classList.remove('active');
                 
                 // Clear form fields
-                document.getElementById('authEmail').value = '';
-                document.getElementById('authName').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupName').value = '';
+                document.getElementById('loginEmail').value = '';
             }
         }
         
