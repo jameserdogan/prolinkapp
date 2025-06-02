@@ -2975,6 +2975,26 @@
                     }
                 }
             });
+            
+            // Add some test data for development/demo (remove in production)
+            if (checkedInUsers.length === 0 && !isFirebaseAvailable) {
+                // Add mock checked-in users with various industries
+                const mockUsers = [
+                    { id: 'mock1', fullName: 'Sarah Johnson', business: 'Tech Innovations LLC', jobTitle: 'CEO', industry: 'Technology', companyAge: '3-5 years' },
+                    { id: 'mock2', fullName: 'Ahmed Hassan', business: 'Desert Real Estate', jobTitle: 'Managing Director', industry: 'Real Estate', companyAge: 'More than 5 years' },
+                    { id: 'mock3', fullName: 'Maria Garcia', business: 'Global Finance Partners', jobTitle: 'CFO', industry: 'Finance', companyAge: '1-2 years' },
+                    { id: 'mock4', fullName: 'James Chen', business: 'Healthcare Plus', jobTitle: 'Medical Director', industry: 'Healthcare', companyAge: '3-5 years' },
+                    { id: 'mock5', fullName: 'Fatima Al-Rashid', business: 'Legal Advisors MENA', jobTitle: 'Senior Partner', industry: 'Legal', companyAge: 'More than 5 years' },
+                    { id: 'mock6', fullName: 'Robert Miller', business: 'Hospitality Group', jobTitle: 'Operations Manager', industry: 'Hospitality', companyAge: '1-2 years' },
+                    { id: 'mock7', fullName: 'Priya Patel', business: 'E-Shop Dubai', jobTitle: 'Founder', industry: 'E-commerce', companyAge: 'Less than 1 year' },
+                    { id: 'mock8', fullName: 'Michael Brown', business: 'ConsultPro', jobTitle: 'Strategy Consultant', industry: 'Consulting', companyAge: '3-5 years' },
+                    { id: 'mock9', fullName: 'Lisa Wang', business: 'Digital Marketing Hub', jobTitle: 'Creative Director', industry: 'Marketing', companyAge: '1-2 years' },
+                    { id: 'mock10', fullName: 'Omar Khalil', business: 'BuildRight Construction', jobTitle: 'Project Manager', industry: 'Construction', companyAge: 'More than 5 years' }
+                ];
+                
+                checkedInUsers = mockUsers;
+                console.log('Added mock data for demo purposes');
+            }
         });
     </script>
 </body>
