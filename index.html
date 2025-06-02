@@ -1089,8 +1089,18 @@
                     <option value="Healthcare">Healthcare</option>
                     <option value="Consulting">Consulting</option>
                     <option value="Marketing">Marketing & PR</option>
+                    <option value="E-commerce">E-commerce</option>
                     <option value="Hospitality">Hospitality</option>
                     <option value="Retail">Retail</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Education">Education</option>
+                    <option value="Media">Media & Advertising</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Logistics">Logistics & Supply Chain</option>
+                    <option value="Energy">Energy & Utilities</option>
+                    <option value="Automotive">Automotive</option>
+                    <option value="Food & Beverage">Food & Beverage</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -2900,6 +2910,7 @@
         
         function updateCheckedInCount() {
             document.getElementById('checkedInCount').textContent = `${checkedInUsers.length}`;
+            document.getElementById('dashboardCheckedInCount').textContent = checkedInUsers.length;
         }
         
         // Load existing data from Firebase on startup
