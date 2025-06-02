@@ -1067,9 +1067,6 @@
     </div>
     
     <script>
-        // Copy all your existing JavaScript code here
-        // I'm not including it to save space, but it should be the same as your original
-        
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCXuxpRvja1m9gTSb00LUUlJGCMHKPJNEo",
@@ -1165,9 +1162,7 @@
             { name: "Fouad Zaher", ticketType: "Last Call Admission" }
         ];
         
-        // All your existing JavaScript functions go here...
-        // I'll just include the essential ones for space
-        
+        // Utility Functions
         function showNotification(message, isError = false) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -1178,6 +1173,162 @@
             }, 3000);
         }
         
+        function setButtonLoading(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            if (isLoading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+            }
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('input-error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+        
+        function clearError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.remove('input-error');
+            error.style.display = 'none';
+        }
+        
+        // Password Functions
+        function validatePassword(password) {
+            return {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /\d/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+        }
+        
+        function getPasswordStrength(password) {
+            const checks = validatePassword(password);
+            const score = Object.values(checks).filter(Boolean).length;
+            
+            if (score < 3) return 'weak';
+            if (score < 5) return 'medium';
+            return 'strong';
+        }
+        
+        function updatePasswordStrength(password) {
+            const strengthContainer = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('strengthText');
+            const strengthBar = strengthContainer.querySelector('.strength-bar > div');
+            
+            if (password.length === 0) {
+                strengthContainer.style.display = 'none';
+                return;
+            }
+            
+            strengthContainer.style.display = 'block';
+            
+            const checks = validatePassword(password);
+            const strength = getPasswordStrength(password);
+            
+            // Update bar width and color
+            if (strength === 'weak') {
+                strengthBar.style.width = '33%';
+                strengthBar.style.background = 'var(--error-color)';
+            } else if (strength === 'medium') {
+                strengthBar.style.width = '66%';
+                strengthBar.style.background = '#fbbf24';
+            } else {
+                strengthBar.style.width = '100%';
+                strengthBar.style.background = 'var(--success-color)';
+            }
+            
+            let requirements = [];
+            if (!checks.length) requirements.push('8+ characters');
+            if (!checks.uppercase) requirements.push('uppercase letter');
+            if (!checks.lowercase) requirements.push('lowercase letter');
+            if (!checks.number) requirements.push('number');
+            if (!checks.special) requirements.push('special character');
+            
+            if (strength === 'weak') {
+                strengthText.textContent = `Weak - Add: ${requirements.slice(0, 2).join(', ')}`;
+                strengthText.style.color = 'var(--error-color)';
+            } else if (strength === 'medium') {
+                strengthText.textContent = 'Medium - Good, but could be stronger';
+                strengthText.style.color = '#fbbf24';
+            } else {
+                strengthText.textContent = 'Strong - Great password!';
+                strengthText.style.color = 'var(--success-color)';
+            }
+        }
+        
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️';
+            }
+        }
+        
+        // User Profile Management
+        async function loadUserProfile(firebaseUser) {
+            if (!firebaseUser) return;
+            
+            try {
+                // Get user profile from database
+                const snapshot = await database.ref('userProfiles/' + firebaseUser.uid).once('value');
+                const profile = snapshot.val();
+                
+                currentUser = {
+                    id: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    fullName: profile?.fullName || firebaseUser.displayName || '',
+                    business: profile?.business || 'Entrepreneur',
+                    industry: profile?.industry || '',
+                    bio: profile?.bio || '',
+                    timestamp: profile?.timestamp || new Date().toISOString(),
+                    emailVerified: firebaseUser.emailVerified
+                };
+                
+                console.log('User profile loaded:', currentUser);
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+            }
+        }
+        
+        async function saveUserProfile(profileData) {
+            if (!auth.currentUser) return;
+            
+            try {
+                const userProfile = {
+                    fullName: profileData.fullName,
+                    business: profileData.business,
+                    timestamp: profileData.timestamp,
+                    lastUpdated: new Date().toISOString()
+                };
+                
+                await database.ref('userProfiles/' + auth.currentUser.uid).set(userProfile);
+                console.log('User profile saved');
+            } catch (error) {
+                console.error('Error saving user profile:', error);
+                throw error;
+            }
+        }
+        
+        // Screen Navigation
         function showScreen(screenId) {
             const targetScreen = document.getElementById(screenId);
             if (!targetScreen) {
@@ -1191,6 +1342,330 @@
             targetScreen.classList.add('active');
         }
         
+        function showCreateAccount() {
+            showScreen('createAccountScreen');
+            document.getElementById('signupEmail').focus();
+            
+            // Add password strength checking
+            const passwordInput = document.getElementById('signupPassword');
+            passwordInput.addEventListener('input', function() {
+                updatePasswordStrength(this.value);
+            });
+            
+            // Add confirm password validation
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            confirmPasswordInput.addEventListener('input', function() {
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                } else {
+                    clearError('confirmPassword', 'confirmPasswordError');
+                }
+            });
+        }
+        
+        function showLogin() {
+            showScreen('loginScreen');
+            document.getElementById('loginEmail').focus();
+        }
+        
+        function goBack() {
+            showScreen('welcomeScreen');
+        }
+        
+        function joinEvent() {
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                showCreateAccount();
+                return;
+            }
+            
+            showScreen('checkinScreen');
+            loadPreRegisteredAttendees();
+        }
+        
+        // Account Functions
+        async function createAccount(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('signupEmail').value.trim();
+            const name = document.getElementById('signupName').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const business = document.getElementById('signupBusiness').value.trim();
+            
+            // Clear previous errors
+            clearError('signupEmail', 'emailError');
+            clearError('signupName', 'nameError');
+            clearError('signupPassword', 'passwordError');
+            clearError('confirmPassword', 'confirmPasswordError');
+            
+            let hasError = false;
+            
+            // Validate email
+            if (!email || !validateEmail(email)) {
+                showError('signupEmail', 'emailError', 'Please enter a valid email address');
+                hasError = true;
+            }
+            
+            // Validate name
+            if (!name || name.length < 2) {
+                showError('signupName', 'nameError', 'Please enter your full name');
+                hasError = true;
+            }
+            
+            // Validate password
+            const passwordChecks = validatePassword(password);
+            if (!password || password.length < 8) {
+                showError('signupPassword', 'passwordError', 'Password must be at least 8 characters long');
+                hasError = true;
+            } else if (!passwordChecks.uppercase || !passwordChecks.lowercase || !passwordChecks.number) {
+                showError('signupPassword', 'passwordError', 'Password must contain uppercase, lowercase, and number');
+                hasError = true;
+            }
+            
+            // Validate confirm password
+            if (password !== confirmPassword) {
+                showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            setButtonLoading('createAccountBtn', true);
+            
+            try {
+                if (isFirebaseAvailable) {
+                    // Create user with Firebase Auth
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const firebaseUser = userCredential.user;
+                    
+                    console.log('Firebase user created successfully:', firebaseUser.uid);
+                    
+                    // Update current user immediately after successful creation
+                    currentUser = {
+                        id: firebaseUser.uid,
+                        email: firebaseUser.email,
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        timestamp: new Date().toISOString(),
+                        emailVerified: firebaseUser.emailVerified
+                    };
+                    
+                    // Try to update display name (non-critical)
+                    try {
+                        await firebaseUser.updateProfile({
+                            displayName: name
+                        });
+                        console.log('Display name updated');
+                    } catch (error) {
+                        console.warn('Could not update display name:', error);
+                    }
+                    
+                    // Try to save profile data (non-critical)
+                    try {
+                        const profileData = {
+                            fullName: name,
+                            business: business || 'Entrepreneur',
+                            timestamp: new Date().toISOString()
+                        };
+                        await saveUserProfile(profileData);
+                        console.log('Profile data saved');
+                    } catch (error) {
+                        console.warn('Could not save profile data:', error);
+                    }
+                    
+                    // Try to send email verification (non-critical)
+                    try {
+                        await firebaseUser.sendEmailVerification({
+                            url: window.location.href
+                        });
+                        console.log('Verification email sent');
+                        showNotification('Account created! Please check your email to verify your account.');
+                    } catch (error) {
+                        console.warn('Could not send verification email:', error);
+                        showNotification('Account created successfully! Email verification may be sent shortly.');
+                    }
+                    
+                    setButtonLoading('createAccountBtn', false);
+                    
+                    // Go directly to dashboard for Tinder-style experience
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
+                    
+                } else {
+                    // Local storage fallback (for development only)
+                    const existingUser = allUsers.find(user => user.email === email);
+                    if (existingUser) {
+                        setButtonLoading('createAccountBtn', false);
+                        showNotification('Account with this email already exists. Please login instead.', true);
+                        setTimeout(() => showLogin(), 2000);
+                        return;
+                    }
+                    
+                    currentUser = {
+                        id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        email: email,
+                        fullName: name,
+                        business: business || 'Entrepreneur',
+                        timestamp: new Date().toISOString(),
+                        emailVerified: false
+                    };
+                    
+                    allUsers.push(currentUser);
+                    setButtonLoading('createAccountBtn', false);
+                    showNotification('Account created successfully! (Development mode)');
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
+                }
+            } catch (error) {
+                setButtonLoading('createAccountBtn', false);
+                console.error('Account creation error:', error);
+                
+                // Handle specific Firebase Auth errors
+                if (error.code === 'auth/email-already-in-use') {
+                    showError('signupEmail', 'emailError', 'An account with this email already exists');
+                    showNotification('Account with this email already exists. Please login instead.', true);
+                } else if (error.code === 'auth/weak-password') {
+                    showError('signupPassword', 'passwordError', 'Password is too weak');
+                } else if (error.code === 'auth/invalid-email') {
+                    showError('signupEmail', 'emailError', 'Invalid email address');
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    showNotification('Email/password sign-in is not enabled. Please contact support.', true);
+                } else {
+                    // Log the full error for debugging
+                    console.error('Full error details:', error);
+                    showNotification('Error creating account. Please try again.', true);
+                }
+            }
+        }
+        
+        async function loginUser(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            clearError('loginEmail', 'loginEmailError');
+            clearError('loginPassword', 'loginPasswordError');
+            
+            let hasError = false;
+            
+            if (!email || !validateEmail(email)) {
+                showError('loginEmail', 'loginEmailError', 'Please enter a valid email address');
+                hasError = true;
+            }
+            
+            if (!password) {
+                showError('loginPassword', 'loginPasswordError', 'Please enter your password');
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            setButtonLoading('loginBtn', true);
+            
+            try {
+                if (isFirebaseAvailable) {
+                    // Sign in with Firebase Auth
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    const firebaseUser = userCredential.user;
+                    
+                    // Load user profile
+                    await loadUserProfile(firebaseUser);
+                    
+                    setButtonLoading('loginBtn', false);
+                    showNotification('Login successful!');
+                    
+                    // Go directly to dashboard for Tinder-style experience
+                    showScreen('dashboardScreen');
+                    loadDashboardData();
+                    
+                } else {
+                    // Local storage fallback
+                    const existingUser = allUsers.find(user => user.email === email);
+                    
+                    setTimeout(() => {
+                        setButtonLoading('loginBtn', false);
+                        
+                        if (existingUser) {
+                            currentUser = existingUser;
+                            showNotification('Login successful! (Development mode)');
+                            showScreen('dashboardScreen');
+                            loadDashboardData();
+                        } else {
+                            showNotification('Account not found. Please create a new account.', true);
+                            setTimeout(() => showCreateAccount(), 2000);
+                        }
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                setButtonLoading('loginBtn', false);
+                console.error('Login error:', error);
+                
+                // Handle specific Firebase Auth errors
+                if (error.code === 'auth/user-not-found') {
+                    showError('loginEmail', 'loginEmailError', 'No account found with this email');
+                    showNotification('Account not found. Please create a new account.', true);
+                } else if (error.code === 'auth/wrong-password') {
+                    showError('loginPassword', 'loginPasswordError', 'Incorrect password');
+                    showNotification('Incorrect password. Please try again.', true);
+                } else if (error.code === 'auth/invalid-email') {
+                    showError('loginEmail', 'loginEmailError', 'Invalid email address');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showNotification('Too many failed attempts. Please try again later.', true);
+                } else {
+                    showNotification('Login error. Please try again.', true);
+                }
+            }
+        }
+        
+        async function showForgotPassword() {
+            const email = document.getElementById('loginEmail').value.trim();
+            
+            if (!email || !validateEmail(email)) {
+                showNotification('Please enter your email address first, then click "Forgot password"');
+                document.getElementById('loginEmail').focus();
+                return;
+            }
+            
+            if (!isFirebaseAvailable) {
+                showNotification('Password reset not available in development mode');
+                return;
+            }
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showNotification('Password reset email sent! Check your inbox.');
+            } catch (error) {
+                console.error('Password reset error:', error);
+                
+                if (error.code === 'auth/user-not-found') {
+                    showNotification('No account found with this email address', true);
+                } else {
+                    showNotification('Error sending password reset email. Please try again.', true);
+                }
+            }
+        }
+        
+        async function signOut() {
+            try {
+                if (isFirebaseAvailable) {
+                    await auth.signOut();
+                }
+                currentUser = null;
+                showNotification('Signed out successfully');
+                showScreen('welcomeScreen');
+            } catch (error) {
+                console.error('Sign out error:', error);
+                showNotification('Error signing out', true);
+            }
+        }
+        
+        // Dashboard Functions
         function loadDashboardData() {
             // Update user name
             if (currentUser) {
@@ -1523,6 +1998,7 @@
             }, 500);
         }
         
+        // Profile Functions
         function showProfileScreen() {
             showScreen('profileScreen');
             loadProfileData();
@@ -1589,26 +2065,252 @@
             showNotification('ProLink AI - Smart Networking for Dubai Entrepreneurs');
         }
         
-        async function signOut() {
-            try {
-                if (isFirebaseAvailable) {
-                    await auth.signOut();
+        // Event Check-in Functions
+        function loadPreRegisteredAttendees() {
+            preRegisteredAttendees = tonightAttendees.map((attendee, index) => ({
+                id: 'prereg_' + index,
+                name: attendee.name,
+                ticketType: attendee.ticketType,
+                isPreRegistered: true
+            }));
+            renderAttendeeList();
+            updateCheckedInCount();
+        }
+        
+        function renderAttendeeList() {
+            const attendeeList = document.getElementById('attendeeList');
+            const allAttendees = [...preRegisteredAttendees, ...checkedInUsers.filter(u => !u.isPreRegistered)];
+            
+            if (allAttendees.length === 0) {
+                attendeeList.innerHTML = `
+                    <div style="padding: 20px; text-align: center; color: var(--text-secondary);">
+                        <div style="font-size: 24px; margin-bottom: 8px;">👥</div>
+                        <div>No attendees loaded yet</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            attendeeList.innerHTML = allAttendees.map(attendee => `
+                <div class="attendee-item" onclick="selectAttendee('${attendee.id}', '${attendee.name}')">
+                    <div class="attendee-info">
+                        <div class="attendee-name">${attendee.name}</div>
+                        <div class="attendee-ticket">${attendee.ticketType || 'Added at event'}</div>
+                    </div>
+                    <div class="check-icon">✓</div>
+                </div>
+            `).join('');
+        }
+        
+        function filterAttendees() {
+            const search = document.getElementById('attendeeSearch').value.toLowerCase();
+            const attendeeItems = document.querySelectorAll('.attendee-item');
+            
+            let visibleCount = 0;
+            attendeeItems.forEach(item => {
+                const name = item.querySelector('.attendee-name').textContent.toLowerCase();
+                if (name.includes(search)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
                 }
-                currentUser = null;
-                showNotification('Signed out successfully');
-                showScreen('welcomeScreen');
-            } catch (error) {
-                console.error('Sign out error:', error);
-                showNotification('Error signing out', true);
+            });
+            
+            // If search term matches current user's name exactly, auto-select it
+            if (currentUser && search && currentUser.fullName.toLowerCase().includes(search)) {
+                const matchingItem = Array.from(attendeeItems).find(item => 
+                    item.querySelector('.attendee-name').textContent.toLowerCase().includes(search)
+                );
+                if (matchingItem && matchingItem.style.display !== 'none') {
+                    matchingItem.click();
+                }
             }
         }
         
-        // Add all other functions from your original code here...
-        // (createAccount, loginUser, loadUserProfile, saveUserProfile, etc.)
-        // I'm not including them all to save space, but they should be copied over
+        function selectAttendee(attendeeId, attendeeName) {
+            // Clear previous selections
+            document.querySelectorAll('.attendee-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current attendee
+            event.target.closest('.attendee-item').classList.add('selected');
+            
+            // Store selected attendee
+            selectedAttendeeId = attendeeId;
+            
+            // Show check-in button
+            document.getElementById('checkinBtn').style.display = 'block';
+            showNotification(`Selected: ${attendeeName}`);
+        }
         
-        // Initialize
-        console.log('ProLink AI initialized');
+        function addNewAttendee() {
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                return;
+            }
+            
+            // Check if user is already in the list
+            const existingAttendee = preRegisteredAttendees.find(attendee => 
+                attendee.name.toLowerCase() === currentUser.fullName.toLowerCase()
+            );
+            
+            if (existingAttendee) {
+                showNotification('You are already on the list! Please select your name.');
+                // Auto-select the existing attendee
+                setTimeout(() => {
+                    selectAttendee(existingAttendee.id, existingAttendee.name);
+                    // Find and highlight the item
+                    const attendeeItems = document.querySelectorAll('.attendee-item');
+                    attendeeItems.forEach(item => {
+                        if (item.querySelector('.attendee-name').textContent === existingAttendee.name) {
+                            item.classList.add('selected');
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                }, 1000);
+                return;
+            }
+            
+            const newAttendee = {
+                id: currentUser.id,
+                name: currentUser.fullName,
+                ticketType: 'Added at event',
+                isPreRegistered: false
+            };
+            
+            preRegisteredAttendees.push(newAttendee);
+            renderAttendeeList();
+            showNotification('Added you to the attendee list!');
+            
+            // Auto-select the new attendee
+            setTimeout(() => {
+                selectAttendee(newAttendee.id, newAttendee.name);
+                // Find and highlight the new item
+                const attendeeItems = document.querySelectorAll('.attendee-item');
+                const lastItem = attendeeItems[attendeeItems.length - 1];
+                if (lastItem) {
+                    lastItem.classList.add('selected');
+                    lastItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 500);
+        }
+        
+        function checkInToEvent() {
+            if (!selectedAttendeeId) {
+                showNotification('Please select your name from the list', true);
+                return;
+            }
+            
+            if (!currentUser) {
+                showNotification('Please create an account first', true);
+                return;
+            }
+            
+            // Check if user is already checked in
+            const alreadyCheckedIn = checkedInUsers.find(user => user.id === currentUser.id);
+            if (alreadyCheckedIn) {
+                showNotification('You are already checked in!');
+                showScreen('dashboardScreen');
+                loadDashboardData();
+                return;
+            }
+            
+            // Add user to checked-in list
+            const checkedInUser = {
+                ...currentUser,
+                checkedInAt: new Date().toISOString(),
+                attendeeId: selectedAttendeeId,
+                business: currentUser.business || 'Entrepreneur',
+                industry: currentUser.industry || 'Business'
+            };
+            
+            checkedInUsers.push(checkedInUser);
+            
+            // Save to Firebase
+            if (isFirebaseAvailable) {
+                database.ref('checkedInUsers/' + currentUser.id).set(checkedInUser).then(() => {
+                    showNotification('Successfully checked in!');
+                }).catch((error) => {
+                    console.error('Firebase error:', error);
+                });
+            }
+            
+            // Update count
+            updateCheckedInCount();
+            
+            showNotification('Successfully checked in! Ready to network!');
+            
+            // Go back to dashboard
+            setTimeout(() => {
+                showScreen('dashboardScreen');
+                loadDashboardData();
+            }, 1500);
+        }
+        
+        function updateCheckedInCount() {
+            document.getElementById('checkedInCount').textContent = `${checkedInUsers.length}`;
+        }
+        
+        // Load existing data from Firebase on startup
+        if (isFirebaseAvailable) {
+            database.ref('users').on('value', (snapshot) => {
+                const data = snapshot.val();
+                allUsers = data ? Object.values(data) : [];
+                console.log('Loaded users:', allUsers.length);
+            });
+            
+            database.ref('checkedInUsers').on('value', (snapshot) => {
+                const data = snapshot.val();
+                checkedInUsers = data ? Object.values(data) : [];
+                updateCheckedInCount();
+                console.log('Loaded checked-in users:', checkedInUsers.length);
+                
+                // Update dashboard if active
+                if (document.getElementById('dashboardScreen').classList.contains('active')) {
+                    loadDashboardData();
+                }
+            });
+            
+            database.ref('swipes').on('value', (snapshot) => {
+                const data = snapshot.val();
+                swipes = data || {};
+            });
+            
+            database.ref('matches').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    matches = Object.values(data);
+                    updateDashboardStats();
+                }
+            });
+        }
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('ProLink AI initialized');
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('discoverScreen').classList.contains('active')) {
+                    if (e.key === 'ArrowLeft') swipeLeft();
+                    if (e.key === 'ArrowRight') swipeRight();
+                    if (e.key === 'ArrowUp') superLike();
+                }
+            });
+            
+            // Add form validation on input for all inputs
+            document.addEventListener('input', function(e) {
+                if (e.target.tagName === 'INPUT') {
+                    const errorElement = e.target.parentNode.querySelector('.error-message');
+                    if (errorElement && errorElement.style.display === 'block') {
+                        e.target.classList.remove('input-error');
+                        errorElement.style.display = 'none';
+                    }
+                }
+            });
+        });
         
         // Style improvements for attendee list
         const style = document.createElement('style');
@@ -1678,11 +2380,12 @@
             .profile-card.dragging {
                 transition: none;
             }
+            
+            .input-error {
+                border-color: var(--error-color) !important;
+            }
         `;
         document.head.appendChild(style);
-        
-        // Include the rest of your JavaScript functions here...
-        // Copy all the remaining functions from your original code
     </script>
 </body>
 </html>
